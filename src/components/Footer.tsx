@@ -117,6 +117,12 @@ export default function Footer() {
                 </a>
               </div>
               <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-gold flex-shrink-0" />
+                <a href="https://wa.me/2349092034816" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors">
+                  WhatsApp: +234 909 203 4816
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-gold flex-shrink-0" />
                 <a href="mailto:ebethstores@gmail.com" className="hover:text-gold transition-colors">
                   ebethstores@gmail.com

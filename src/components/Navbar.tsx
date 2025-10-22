@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown } from "lucide-react";
+import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,6 +20,7 @@ import logo from "@/assets/ebeth-logo.jpg";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -35,12 +36,20 @@ export default function Navbar() {
       };
       fetchCartCount();
 
+      // Check admin status
+      const checkAdminStatus = async () => {
+        const { data } = await supabase.rpc("is_admin", { _user_id: user.id });
+        setIsAdmin(data || false);
+      };
+      checkAdminStatus();
+
       // Listen for cart updates
       const handleCartUpdate = () => fetchCartCount();
       window.addEventListener("cart-updated", handleCartUpdate);
       return () => window.removeEventListener("cart-updated", handleCartUpdate);
     } else {
       setCartCount(0);
+      setIsAdmin(false);
     }
   }, [user]);
 
@@ -180,6 +189,15 @@ export default function Navbar() {
                   <DropdownMenuItem onClick={() => navigate("/wishlist")}>
                     Wishlist
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate("/admin")}>
+                        <Shield className="h-4 w-4 mr-2" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} className="text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
