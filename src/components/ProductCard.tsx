@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   id: string;
@@ -27,6 +31,33 @@ export default function ProductCard({
   isSale,
 }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("cart_items")
+      .upsert({
+        user_id: user.id,
+        product_id: id,
+        quantity: 1,
+      }, {
+        onConflict: "user_id,product_id",
+        ignoreDuplicates: false,
+      });
+
+    if (error) {
+      toast.error("Failed to add to cart");
+    } else {
+      toast.success("Added to cart!");
+      window.dispatchEvent(new Event("cart-updated"));
+    }
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -99,7 +130,7 @@ export default function ProductCard({
         </div>
 
         {/* Add to Cart Button */}
-        <Button variant="luxury" className="w-full" size="sm">
+        <Button variant="luxury" className="w-full" size="sm" onClick={handleAddToCart}>
           <ShoppingCart className="h-4 w-4 mr-2" />
           Add to Cart
         </Button>

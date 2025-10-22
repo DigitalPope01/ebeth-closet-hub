@@ -31,6 +31,11 @@ export default function Navbar() {
         setCartCount(count || 0);
       };
       fetchCartCount();
+
+      // Listen for cart updates
+      const handleCartUpdate = () => fetchCartCount();
+      window.addEventListener("cart-updated", handleCartUpdate);
+      return () => window.removeEventListener("cart-updated", handleCartUpdate);
     } else {
       setCartCount(0);
     }
@@ -90,7 +95,7 @@ export default function Navbar() {
             <Button variant="ghost" size="icon" className="hover:text-gold">
               <Heart className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="relative hover:text-gold">
+            <Button variant="ghost" size="icon" className="relative hover:text-gold" onClick={() => navigate("/cart")}>
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-gold text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
