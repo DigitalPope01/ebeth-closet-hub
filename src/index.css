@@ -26,27 +26,27 @@ All colors MUST be HSL.
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 45 65% 55%;
+    --accent: 45 100% 60%;
     --accent-foreground: 0 0% 5%;
 
-    --gold: 45 85% 55%;
-    --gold-light: 45 85% 65%;
-    --gold-dark: 45 75% 45%;
+    --gold: 45 100% 55%;
+    --gold-light: 45 100% 65%;
+    --gold-dark: 45 90% 45%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 45 85% 55%;
+    --ring: 45 100% 55%;
 
     --radius: 0.5rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(45 85% 55%) 0%, hsl(45 75% 45%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(45 100% 55%) 0%, hsl(45 90% 45%) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(0 0% 15%) 100%);
     --gradient-overlay: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
     
-    --shadow-luxury: 0 20px 50px -12px hsl(45 85% 55% / 0.25);
+    --shadow-luxury: 0 20px 50px -12px hsl(45 100% 55% / 0.3);
     --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.1);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -71,12 +71,12 @@ All colors MUST be HSL.
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 45 85% 55%;
+    --accent: 45 100% 60%;
     --accent-foreground: 0 0% 5%;
 
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 45 85% 55%;
+    --ring: 45 100% 55%;
   }
 }
 
