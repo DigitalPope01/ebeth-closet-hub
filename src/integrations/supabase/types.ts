@@ -310,6 +310,7 @@ export type Database = {
           sku: string | null
           slug: string
           stock_quantity: number | null
+          subcategory: string | null
           updated_at: string | null
           weight: number | null
         }
@@ -329,6 +330,7 @@ export type Database = {
           sku?: string | null
           slug: string
           stock_quantity?: number | null
+          subcategory?: string | null
           updated_at?: string | null
           weight?: number | null
         }
@@ -348,6 +350,7 @@ export type Database = {
           sku?: string | null
           slug?: string
           stock_quantity?: number | null
+          subcategory?: string | null
           updated_at?: string | null
           weight?: number | null
         }
