@@ -47,15 +47,17 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <img src={logo} alt="Ebeth Boutique" className="h-12 w-12 rounded-full" />
-            <div className="hidden md:block">
-              <div className="text-xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
-                EBETH BOUTIQUE
+          <Link to="/" className="flex items-center space-x-3 flex-shrink-0 hover:opacity-80 transition-opacity">
+            <div className="h-14 w-14 rounded-full border-2 border-gold/30 p-0.5 hover:border-gold transition-colors">
+              <img src={logo} alt="Ebeth Boutique" className="h-full w-full rounded-full object-cover" />
+            </div>
+            <div className="hidden lg:block">
+              <div className="text-xl font-extrabold tracking-tight leading-tight">
+                <span className="bg-gradient-primary bg-clip-text text-transparent">EBETH BOUTIQUE</span>
               </div>
-              <div className="text-xs font-bold text-gold">& Exclusive Store</div>
+              <div className="text-xs font-bold text-gold tracking-wide">& Exclusive Store</div>
             </div>
           </Link>
 

@@ -7,6 +7,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Shop from "./pages/Shop";
+import Fashion from "./pages/Fashion";
+import Accessories from "./pages/Accessories";
+import Household from "./pages/Household";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders";
@@ -27,14 +30,14 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/fashion" element={<Fashion />} />
+            <Route path="/accessories" element={<Accessories />} />
+            <Route path="/household" element={<Household />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/about" element={<About />} />
-            <Route path="/fashion" element={<Shop />} />
-            <Route path="/accessories" element={<Shop />} />
-            <Route path="/household" element={<Shop />} />
             <Route path="/deals" element={<Shop />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

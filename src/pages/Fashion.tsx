@@ -16,84 +16,80 @@ interface Product {
   original_price: number | null;
   is_new: boolean;
   is_on_sale: boolean;
-  stock_quantity: number;
-  category_id: string | null;
   product_images?: Array<{
     image_url: string;
     is_primary: boolean;
-    sort_order: number;
   }>;
 }
 
-export default function Shop() {
+export default function Fashion() {
   const [searchParams] = useSearchParams();
-  const categorySlug = searchParams.get("category");
+  const subCategory = searchParams.get("sub");
   
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("newest");
-  const [categories, setCategories] = useState<any[]>([]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, [categorySlug, sortBy]);
-
-  const fetchCategories = async () => {
-    const { data } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("is_active", true)
-      .order("sort_order");
-    setCategories(data || []);
-  };
+  }, [subCategory, sortBy]);
 
   const fetchProducts = async () => {
     setLoading(true);
-    let query = supabase
-      .from("products")
-      .select(`
-        *,
-        product_images(image_url, is_primary, sort_order)
-      `)
-      .eq("is_active", true);
+    
+    const { data: category } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("slug", "fashion")
+      .single();
 
-    if (categorySlug) {
-      const { data: category } = await supabase
-        .from("categories")
-        .select("id")
-        .eq("slug", categorySlug)
-        .single();
+    if (category) {
+      let query = supabase
+        .from("products")
+        .select(`
+          *,
+          product_images(image_url, is_primary, sort_order)
+        `)
+        .eq("is_active", true)
+        .eq("category_id", category.id);
+
+      // Apply sorting
+      switch (sortBy) {
+        case "price-asc":
+          query = query.order("price", { ascending: true });
+          break;
+        case "price-desc":
+          query = query.order("price", { ascending: false });
+          break;
+        case "newest":
+          query = query.order("created_at", { ascending: false });
+          break;
+        default:
+          query = query.order("created_at", { ascending: false });
+      }
+
+      const { data, error } = await query;
       
-      if (category) {
-        query = query.eq("category_id", category.id);
+      if (!error && data) {
+        setProducts(data);
       }
     }
-
-    // Apply sorting
-    switch (sortBy) {
-      case "price-asc":
-        query = query.order("price", { ascending: true });
-        break;
-      case "price-desc":
-        query = query.order("price", { ascending: false });
-        break;
-      case "newest":
-        query = query.order("created_at", { ascending: false });
-        break;
-      default:
-        query = query.order("created_at", { ascending: false });
-    }
-
-    const { data, error } = await query;
-    
-    if (!error && data) {
-      setProducts(data);
-    }
     setLoading(false);
+  };
+
+  const subcategories = [
+    { id: "clothing", name: "Clothing" },
+    { id: "shoes", name: "Shoes" },
+    { id: "bags", name: "Bags" },
+    { id: "jewelry", name: "Jewelry" }
+  ];
+
+  const getTitle = () => {
+    if (subCategory) {
+      const sub = subcategories.find(s => s.id === subCategory);
+      return sub ? sub.name : "Fashion";
+    }
+    return "Fashion";
   };
 
   return (
@@ -101,39 +97,35 @@ export default function Shop() {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">
-            {categorySlug
-              ? categories.find((c) => c.slug === categorySlug)?.name || "Shop"
-              : "All Products"}
-          </h1>
+          <h1 className="text-4xl font-bold mb-4">{getTitle()}</h1>
           <p className="text-muted-foreground">
-            Discover our curated collection of premium fashion and lifestyle essentials
+            Discover our curated collection of premium fashion items
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => window.location.href = "/shop"}
+              onClick={() => window.location.href = "/fashion"}
               className={`px-4 py-2 rounded-lg transition-colors ${
-                !categorySlug
+                !subCategory
                   ? "bg-gold text-primary-foreground"
                   : "bg-secondary hover:bg-secondary/80"
               }`}
             >
-              All
+              All Fashion
             </button>
-            {categories.map((category) => (
+            {subcategories.map((sub) => (
               <button
-                key={category.id}
-                onClick={() => (window.location.href = `/shop?category=${category.slug}`)}
+                key={sub.id}
+                onClick={() => (window.location.href = `/fashion?sub=${sub.id}`)}
                 className={`px-4 py-2 rounded-lg transition-colors ${
-                  categorySlug === category.slug
+                  subCategory === sub.id
                     ? "bg-gold text-primary-foreground"
                     : "bg-secondary hover:bg-secondary/80"
                 }`}
               >
-                {category.name}
+                {sub.name}
               </button>
             ))}
           </div>

@@ -6,7 +6,7 @@ import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import categoryFashion from "@/assets/category-fashion.jpg";
+import categoryAccessories from "@/assets/category-accessories.jpg";
 
 interface Product {
   id: string;
@@ -16,84 +16,80 @@ interface Product {
   original_price: number | null;
   is_new: boolean;
   is_on_sale: boolean;
-  stock_quantity: number;
-  category_id: string | null;
   product_images?: Array<{
     image_url: string;
     is_primary: boolean;
-    sort_order: number;
   }>;
 }
 
-export default function Shop() {
+export default function Accessories() {
   const [searchParams] = useSearchParams();
-  const categorySlug = searchParams.get("category");
+  const subCategory = searchParams.get("sub");
   
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("newest");
-  const [categories, setCategories] = useState<any[]>([]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, [categorySlug, sortBy]);
-
-  const fetchCategories = async () => {
-    const { data } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("is_active", true)
-      .order("sort_order");
-    setCategories(data || []);
-  };
+  }, [subCategory, sortBy]);
 
   const fetchProducts = async () => {
     setLoading(true);
-    let query = supabase
-      .from("products")
-      .select(`
-        *,
-        product_images(image_url, is_primary, sort_order)
-      `)
-      .eq("is_active", true);
+    
+    const { data: category } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("slug", "accessories")
+      .single();
 
-    if (categorySlug) {
-      const { data: category } = await supabase
-        .from("categories")
-        .select("id")
-        .eq("slug", categorySlug)
-        .single();
+    if (category) {
+      let query = supabase
+        .from("products")
+        .select(`
+          *,
+          product_images(image_url, is_primary, sort_order)
+        `)
+        .eq("is_active", true)
+        .eq("category_id", category.id);
+
+      // Apply sorting
+      switch (sortBy) {
+        case "price-asc":
+          query = query.order("price", { ascending: true });
+          break;
+        case "price-desc":
+          query = query.order("price", { ascending: false });
+          break;
+        case "newest":
+          query = query.order("created_at", { ascending: false });
+          break;
+        default:
+          query = query.order("created_at", { ascending: false });
+      }
+
+      const { data, error } = await query;
       
-      if (category) {
-        query = query.eq("category_id", category.id);
+      if (!error && data) {
+        setProducts(data);
       }
     }
-
-    // Apply sorting
-    switch (sortBy) {
-      case "price-asc":
-        query = query.order("price", { ascending: true });
-        break;
-      case "price-desc":
-        query = query.order("price", { ascending: false });
-        break;
-      case "newest":
-        query = query.order("created_at", { ascending: false });
-        break;
-      default:
-        query = query.order("created_at", { ascending: false });
-    }
-
-    const { data, error } = await query;
-    
-    if (!error && data) {
-      setProducts(data);
-    }
     setLoading(false);
+  };
+
+  const subcategories = [
+    { id: "watches", name: "Watches" },
+    { id: "belts", name: "Belts" },
+    { id: "sunglasses", name: "Sunglasses" },
+    { id: "wallets", name: "Wallets" }
+  ];
+
+  const getTitle = () => {
+    if (subCategory) {
+      const sub = subcategories.find(s => s.id === subCategory);
+      return sub ? sub.name : "Accessories";
+    }
+    return "Accessories";
   };
 
   return (
@@ -101,39 +97,35 @@ export default function Shop() {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">
-            {categorySlug
-              ? categories.find((c) => c.slug === categorySlug)?.name || "Shop"
-              : "All Products"}
-          </h1>
+          <h1 className="text-4xl font-bold mb-4">{getTitle()}</h1>
           <p className="text-muted-foreground">
-            Discover our curated collection of premium fashion and lifestyle essentials
+            Discover our collection of luxury accessories
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => window.location.href = "/shop"}
+              onClick={() => window.location.href = "/accessories"}
               className={`px-4 py-2 rounded-lg transition-colors ${
-                !categorySlug
+                !subCategory
                   ? "bg-gold text-primary-foreground"
                   : "bg-secondary hover:bg-secondary/80"
               }`}
             >
-              All
+              All Accessories
             </button>
-            {categories.map((category) => (
+            {subcategories.map((sub) => (
               <button
-                key={category.id}
-                onClick={() => (window.location.href = `/shop?category=${category.slug}`)}
+                key={sub.id}
+                onClick={() => (window.location.href = `/accessories?sub=${sub.id}`)}
                 className={`px-4 py-2 rounded-lg transition-colors ${
-                  categorySlug === category.slug
+                  subCategory === sub.id
                     ? "bg-gold text-primary-foreground"
                     : "bg-secondary hover:bg-secondary/80"
                 }`}
               >
-                {category.name}
+                {sub.name}
               </button>
             ))}
           </div>
@@ -167,7 +159,7 @@ export default function Shop() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => {
-              const primaryImage = product.product_images?.find(img => img.is_primary)?.image_url || categoryFashion;
+              const primaryImage = product.product_images?.find(img => img.is_primary)?.image_url || categoryAccessories;
               return (
                 <ProductCard
                   key={product.id}

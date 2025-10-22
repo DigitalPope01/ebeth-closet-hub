@@ -9,45 +9,48 @@ import { TrendingUp, Truck, Shield, Headphones } from "lucide-react";
 import categoryFashion from "@/assets/category-fashion.jpg";
 import categoryAccessories from "@/assets/category-accessories.jpg";
 import categoryHousehold from "@/assets/category-household.jpg";
+import eveningDress from "@/assets/products/evening-dress.jpg";
+import leatherHandbag from "@/assets/products/leather-handbag.jpg";
+import kitchenSet from "@/assets/products/kitchen-set.jpg";
+import cocktailDress from "@/assets/products/cocktail-dress.jpg";
 
 export default function Index() {
-  // Mock product data
   const featuredProducts = [
     {
-      id: "1",
+      id: "677ff0e1-f678-40d3-9cb3-a2fa58cb9231",
       name: "Designer Evening Dress",
       price: 85000,
       originalPrice: 120000,
-      image: categoryFashion,
+      image: eveningDress,
       rating: 4.8,
       reviews: 124,
       isNew: true,
       isSale: true,
     },
     {
-      id: "2",
+      id: "8e04eef8-ade6-4464-b310-fc34d7cae555",
       name: "Luxury Leather Handbag",
       price: 65000,
-      image: categoryAccessories,
+      image: leatherHandbag,
       rating: 4.9,
       reviews: 89,
       isNew: true,
     },
     {
-      id: "3",
+      id: "ae72bdb6-1d23-4918-90e2-73b0a70128ec",
       name: "Premium Kitchen Set",
       price: 45000,
       originalPrice: 60000,
-      image: categoryHousehold,
+      image: kitchenSet,
       rating: 4.7,
       reviews: 156,
       isSale: true,
     },
     {
-      id: "4",
+      id: "981ca29e-c68a-4aff-97a2-f704ba7bfffd",
       name: "Elegant Cocktail Dress",
       price: 72000,
-      image: categoryFashion,
+      image: cocktailDress,
       rating: 4.8,
       reviews: 92,
     },
