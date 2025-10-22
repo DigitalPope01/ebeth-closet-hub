@@ -22,10 +22,10 @@ export default function Footer() {
               Boutique Elegance Meets Everyday Convenience. Your destination for premium fashion and lifestyle essentials in Nigeria.
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-gold transition-colors">
+              <a href="https://web.facebook.com/ebethstores" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-gold transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-gold transition-colors">
+              <a href="https://www.instagram.com/ebeth_stores?igsh=cW01OXpicW51Y3gz" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-gold transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
               <a href="#" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-gold transition-colors">
@@ -112,14 +112,14 @@ export default function Footer() {
             <div className="space-y-2 text-sm text-primary-foreground/80">
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-gold flex-shrink-0" />
-                <a href="tel:09092034816" className="hover:text-gold transition-colors">
-                  0909 203 4816
+                <a href="tel:+2349092034816" className="hover:text-gold transition-colors">
+                  +234 909 203 4816
                 </a>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-gold flex-shrink-0" />
-                <a href="mailto:hello@ebethboutique.com" className="hover:text-gold transition-colors">
-                  hello@ebethboutique.com
+                <a href="mailto:ebethstores@gmail.com" className="hover:text-gold transition-colors">
+                  ebethstores@gmail.com
                 </a>
               </div>
               <div className="flex items-start gap-2">
