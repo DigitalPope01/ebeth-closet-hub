@@ -111,12 +111,25 @@ export default function Footer() {
             </div>
             <div className="space-y-2 text-sm text-primary-foreground/80">
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-gold" />
-                <span>+234 xxx xxx xxxx</span>
+                <Phone className="h-4 w-4 text-gold flex-shrink-0" />
+                <a href="tel:09092034816" className="hover:text-gold transition-colors">
+                  0909 203 4816
+                </a>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-gold" />
-                <span>Abuja, Nigeria</span>
+                <Mail className="h-4 w-4 text-gold flex-shrink-0" />
+                <a href="mailto:hello@ebethboutique.com" className="hover:text-gold transition-colors">
+                  hello@ebethboutique.com
+                </a>
+              </div>
+              <div className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-gold flex-shrink-0 mt-1" />
+                <div>
+                  <p>Atlantic Mall</p>
+                  <p>40 Ajose Adeogun St, Near Peace Mass Park</p>
+                  <p>Utako, Abuja 900108, FCT</p>
+                  <p className="mt-1 text-gold">Mon-Sun: 7:00 AM - 10:00 PM</p>
+                </div>
               </div>
             </div>
           </div>
