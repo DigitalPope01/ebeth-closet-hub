@@ -41,7 +41,7 @@ export default function Accessories() {
       .from("categories")
       .select("id")
       .eq("slug", "accessories")
-      .single();
+      .maybeSingle();
 
     if (category) {
       let query = supabase
@@ -52,6 +52,11 @@ export default function Accessories() {
         `)
         .eq("is_active", true)
         .eq("category_id", category.id);
+
+      // Apply subcategory filter if selected
+      if (subCategory) {
+        query = query.eq("subcategory", subCategory);
+      }
 
       // Apply sorting
       switch (sortBy) {
