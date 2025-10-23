@@ -71,13 +71,16 @@ export default function Navbar() {
             <div className="h-12 w-12 md:h-14 md:w-14 rounded-full border-2 border-gold/30 p-0.5 hover:border-gold transition-colors">
               <img src={logo} alt="Ebeth Boutique" className="h-full w-full rounded-full object-cover" />
             </div>
-            <span className="text-base md:text-xl font-bold tracking-tight">EBETH</span>
+            <span className="text-base md:text-xl font-bold tracking-tight">Ebeth Exclusive Stores</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/shop" className="text-sm font-semibold hover:text-gold transition-colors">
               Shop
+            </Link>
+            <Link to="/categories" className="text-sm font-semibold hover:text-gold transition-colors">
+              Categories
             </Link>
             
             {/* Fashion Dropdown */}
@@ -247,6 +250,13 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Shop
+              </Link>
+              <Link
+                to="/categories"
+                className="text-sm font-semibold hover:text-gold transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Categories
               </Link>
               
               {/* Fashion Mobile */}

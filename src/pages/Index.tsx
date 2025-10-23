@@ -138,10 +138,15 @@ export default function Index() {
                 Discover our carefully curated collections designed to bring elegance to every aspect of your life
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               {categories.map((category) => (
                 <CategoryCard key={category.title} {...category} />
               ))}
+            </div>
+            <div className="text-center">
+              <Button variant="outline" size="lg" onClick={() => window.location.href = '/categories'}>
+                View All Categories
+              </Button>
             </div>
           </div>
         </section>
