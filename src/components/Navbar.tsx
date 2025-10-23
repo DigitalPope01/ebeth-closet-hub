@@ -21,8 +21,17 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -59,15 +68,10 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20 gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 flex-shrink-0 hover:opacity-80 transition-opacity">
-            <div className="h-14 w-14 rounded-full border-2 border-gold/30 p-0.5 hover:border-gold transition-colors">
+            <div className="h-12 w-12 md:h-14 md:w-14 rounded-full border-2 border-gold/30 p-0.5 hover:border-gold transition-colors">
               <img src={logo} alt="Ebeth Boutique" className="h-full w-full rounded-full object-cover" />
             </div>
-            <div className="hidden lg:block">
-              <div className="text-xl font-extrabold tracking-tight leading-tight">
-                <span className="bg-gradient-primary bg-clip-text text-transparent">EBETH BOUTIQUE</span>
-              </div>
-              <div className="text-xs font-bold text-gold tracking-wide">& Exclusive Store</div>
-            </div>
+            <span className="text-base md:text-xl font-bold tracking-tight">EBETH</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -145,21 +149,28 @@ export default function Navbar() {
           </div>
 
           {/* Search Bar */}
-          <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
+          <form onSubmit={handleSearch} className="hidden lg:flex items-center flex-1 max-w-md mx-8">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 type="search"
                 placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-secondary/50 border-border focus:border-gold transition-colors"
               />
             </div>
-          </div>
+          </form>
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hover:text-gold">
-              <Search className="h-5 w-5 md:hidden" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hover:text-gold lg:hidden"
+              onClick={() => navigate("/search")}
+            >
+              <Search className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon" className="hover:text-gold">
               <Heart className="h-5 w-5" />
