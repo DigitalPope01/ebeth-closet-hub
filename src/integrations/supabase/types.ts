@@ -541,6 +541,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_super_admin_by_email: {
+        Args: { _email: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
@@ -548,10 +552,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       order_status:
@@ -560,7 +561,7 @@ export type Database = {
         | "shipped"
         | "delivered"
         | "cancelled"
-      user_role: "user" | "manager" | "admin" | "super_admin"
+      user_role: "user" | "manager" | "admin" | "super_admin" | "supervisor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -695,7 +696,7 @@ export const Constants = {
         "delivered",
         "cancelled",
       ],
-      user_role: ["user", "manager", "admin", "super_admin"],
+      user_role: ["user", "manager", "admin", "super_admin", "supervisor"],
     },
   },
 } as const

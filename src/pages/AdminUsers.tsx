@@ -81,7 +81,7 @@ export default function AdminUsers() {
     if (existingRole) {
       const { error } = await supabase
         .from("user_roles")
-        .update({ role: newRole as "user" | "admin" | "super_admin" })
+        .update({ role: newRole as "user" | "supervisor" | "manager" | "admin" | "super_admin" })
         .eq("user_id", userId);
 
       if (error) {
@@ -91,7 +91,7 @@ export default function AdminUsers() {
     } else {
       const { error } = await supabase
         .from("user_roles")
-        .insert([{ user_id: userId, role: newRole as "user" | "admin" | "super_admin" }]);
+        .insert([{ user_id: userId, role: newRole as "user" | "supervisor" | "manager" | "admin" | "super_admin" }]);
 
       if (error) {
         toast.error("Failed to assign role");
@@ -133,6 +133,8 @@ export default function AdminUsers() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="user">User</SelectItem>
+                      <SelectItem value="supervisor">Supervisor</SelectItem>
+                      <SelectItem value="manager">Manager</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                       <SelectItem value="super_admin">Super Admin</SelectItem>
                     </SelectContent>

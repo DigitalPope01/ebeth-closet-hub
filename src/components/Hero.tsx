@@ -1,17 +1,37 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import heroImage from "@/assets/hero-fashion.jpg";
+import { useState } from "react";
+import heroFashion from "@/assets/hero-fashion.jpg";
+import accessoriesImg from "@/assets/category-accessories.jpg";
+import householdImg from "@/assets/category-household.jpg";
+import eveningDress from "@/assets/products/evening-dress.jpg";
+import leatherBag from "@/assets/products/leather-handbag.jpg";
 
 export default function Hero() {
+  const [currentImage, setCurrentImage] = useState(0);
+  
+  const heroImages = [
+    { url: heroFashion, alt: "Fashion Collection" },
+    { url: eveningDress, alt: "Evening Dresses" },
+    { url: leatherBag, alt: "Leather Accessories" },
+    { url: accessoriesImg, alt: "Accessories" },
+    { url: householdImg, alt: "Household Items" },
+  ];
+
   return (
-    <section className="relative h-[600px] md:h-[700px] overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-overlay" />
-      </div>
+    <section className="relative h-[600px] md:h-[700px] overflow-hidden group">
+      {/* Background Images with Transition */}
+      {heroImages.map((img, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${
+            currentImage === index ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ backgroundImage: `url(${img.url})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-overlay" />
+        </div>
+      ))}
 
       {/* Content */}
       <div className="relative container mx-auto px-4 h-full flex items-center">
@@ -41,11 +61,19 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-gold rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-gold rounded-full mt-2 animate-pulse" />
-        </div>
+      {/* Image Navigation Dots */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+        {heroImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentImage(index)}
+            onMouseEnter={() => setCurrentImage(index)}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              currentImage === index ? "bg-gold w-8" : "bg-white/50 hover:bg-white/80"
+            }`}
+            aria-label={`View image ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   );
