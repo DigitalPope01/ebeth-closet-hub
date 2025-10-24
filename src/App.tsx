@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import CustomerSupport from "@/components/CustomerSupport";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Shop from "./pages/Shop";
@@ -18,6 +19,7 @@ import Orders from "./pages/Orders";
 import Wishlist from "./pages/Wishlist";
 import About from "./pages/About";
 import SearchResults from "./pages/SearchResults";
+import InstallPWA from "./pages/InstallPWA";
 import Admin from "./pages/Admin";
 import AdminProducts from "./pages/AdminProducts";
 import AdminUsers from "./pages/AdminUsers";
@@ -47,6 +49,7 @@ const App = () => (
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/about" element={<About />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/install" element={<InstallPWA />} />
             <Route path="/deals" element={<Shop />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<AdminProducts />} />
@@ -56,6 +59,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CustomerSupport />
+          <PWAInstallPrompt />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
