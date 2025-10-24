@@ -6,8 +6,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 export default function CustomerSupport() {
   const [isOpen, setIsOpen] = useState(false);
   
-  const whatsappNumber = "+2347064466446"; // Replace with actual WhatsApp number
-  const emailAddress = "support@ebethexclusive.com"; // Replace with actual email
+  const whatsappNumber = "+234 909 203 4816";
+  const emailAddress = "support@ebethexclusive.com";
   
   const handleWhatsAppClick = () => {
     window.open(`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`, "_blank");
