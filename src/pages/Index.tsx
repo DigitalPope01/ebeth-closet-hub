@@ -1,10 +1,13 @@
+import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import CategoryCard from "@/components/CategoryCard";
-import ProductCard from "@/components/ProductCard";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Truck, Shield, Headphones } from "lucide-react";
+
+// Lazy load components for better performance
+const CategoryCard = lazy(() => import("@/components/CategoryCard"));
+const ProductCard = lazy(() => import("@/components/ProductCard"));
+const Footer = lazy(() => import("@/components/Footer"));
 
 import categoryFashion from "@/assets/category-fashion.jpg";
 import categoryAccessories from "@/assets/category-accessories.jpg";
@@ -82,6 +85,7 @@ export default function Index() {
       <Navbar />
       <main>
         <Hero />
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
 
         {/* Features Bar */}
         <section className="bg-secondary py-8 border-y border-border">
@@ -219,8 +223,11 @@ export default function Index() {
             </div>
           </div>
         </section>
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

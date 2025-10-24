@@ -2,6 +2,8 @@ import { useState } from "react";
 import { MessageCircle, Mail, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { formSubmissionLimiter } from "@/utils/rateLimiter";
+import { toast } from "sonner";
 
 export default function CustomerSupport() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,10 +12,18 @@ export default function CustomerSupport() {
   const emailAddress = "support@ebethexclusive.com";
   
   const handleWhatsAppClick = () => {
+    if (!formSubmissionLimiter.isAllowed("whatsapp-click")) {
+      toast.error("Too many requests. Please wait a moment.");
+      return;
+    }
     window.open(`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`, "_blank");
   };
   
   const handleEmailClick = () => {
+    if (!formSubmissionLimiter.isAllowed("email-click")) {
+      toast.error("Too many requests. Please wait a moment.");
+      return;
+    }
     window.location.href = `mailto:${emailAddress}`;
   };
 
