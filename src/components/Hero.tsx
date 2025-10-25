@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, UserPlus } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import heroFashion from "@/assets/hero-fashion.jpg";
 import accessoriesImg from "@/assets/category-accessories.jpg";
 import householdImg from "@/assets/category-household.jpg";
@@ -50,13 +51,18 @@ export default function Hero() {
             Discover curated fashion, accessories, and lifestyle essentials — all in one exclusive destination
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="luxury" size="lg" className="text-base">
-              Shop Collection
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button variant="luxury-outline" size="lg" className="text-base text-white border-white hover:bg-white/10">
-              Weekly Deals
-            </Button>
+            <Link to="/shop">
+              <Button variant="luxury" size="lg" className="text-base w-full sm:w-auto">
+                Shop Collection
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button variant="luxury-outline" size="lg" className="text-base text-white border-white hover:bg-white/10 w-full sm:w-auto">
+                <UserPlus className="mr-2 h-5 w-5" />
+                Sign Up Now
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
