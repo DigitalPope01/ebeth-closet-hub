@@ -1,14 +1,34 @@
+# Ebeth Boutique & Exclusive Store - Robots.txt
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /categories
+Allow: /fashion
+Allow: /accessories
+Allow: /household
+Allow: /about
+
+Disallow: /admin
+Disallow: /auth
+Disallow: /cart
+Disallow: /orders
+Disallow: /profile
+Disallow: /wishlist
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Search engine specific
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0.5
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 0.5
 
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
 Allow: /

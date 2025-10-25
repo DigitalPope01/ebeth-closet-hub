@@ -91,7 +91,9 @@ export default function ProductCard({
       <div className="relative aspect-square overflow-hidden rounded-t-lg bg-secondary">
         <img
           src={image}
-          alt={name}
+          alt={`${name} - Premium boutique product`}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
       </div>

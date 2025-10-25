@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 
 type Product = {
   id: string;
@@ -21,6 +22,12 @@ type Product = {
   category_id: string;
   subcategory: string;
   description: string;
+  product_images?: Array<{
+    id: string;
+    image_url: string;
+    is_primary: boolean;
+    sort_order: number;
+  }>;
 };
 
 export default function AdminProducts() {
@@ -40,6 +47,7 @@ export default function AdminProducts() {
     description: "",
     is_active: true,
   });
+  const [productImages, setProductImages] = useState<string[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -70,7 +78,10 @@ export default function AdminProducts() {
   const fetchProducts = async () => {
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select(`
+        *,
+        product_images(id, image_url, is_primary, sort_order)
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -100,32 +111,64 @@ export default function AdminProducts() {
       slug: formData.name.toLowerCase().replace(/\s+/g, "-"),
     };
 
-    if (editingProduct) {
-      const { error } = await supabase
-        .from("products")
-        .update(productData)
-        .eq("id", editingProduct.id);
+    try {
+      if (editingProduct) {
+        const { error } = await supabase
+          .from("products")
+          .update(productData)
+          .eq("id", editingProduct.id);
 
-      if (error) {
-        toast.error("Failed to update product");
-        return;
+        if (error) throw error;
+
+        // Delete old images and insert new ones
+        await supabase
+          .from("product_images")
+          .delete()
+          .eq("product_id", editingProduct.id);
+
+        if (productImages.length > 0) {
+          const imageRecords = productImages.map((url, index) => ({
+            product_id: editingProduct.id,
+            image_url: url,
+            is_primary: index === 0,
+            sort_order: index,
+          }));
+
+          await supabase.from("product_images").insert(imageRecords);
+        }
+
+        toast.success("Product updated successfully");
+      } else {
+        const { data: newProduct, error } = await supabase
+          .from("products")
+          .insert(productData)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        // Insert product images
+        if (productImages.length > 0) {
+          const imageRecords = productImages.map((url, index) => ({
+            product_id: newProduct.id,
+            image_url: url,
+            is_primary: index === 0,
+            sort_order: index,
+          }));
+
+          await supabase.from("product_images").insert(imageRecords);
+        }
+
+        toast.success("Product created successfully");
       }
 
-      toast.success("Product updated successfully");
-    } else {
-      const { error } = await supabase.from("products").insert(productData);
-
-      if (error) {
-        toast.error("Failed to create product");
-        return;
-      }
-
-      toast.success("Product created successfully");
+      setIsDialogOpen(false);
+      resetForm();
+      fetchProducts();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to save product");
     }
-
-    setIsDialogOpen(false);
-    resetForm();
-    fetchProducts();
   };
 
   const handleDelete = async (id: string) => {
@@ -152,6 +195,7 @@ export default function AdminProducts() {
       description: "",
       is_active: true,
     });
+    setProductImages([]);
     setEditingProduct(null);
   };
 
@@ -166,6 +210,13 @@ export default function AdminProducts() {
       description: product.description || "",
       is_active: product.is_active,
     });
+    
+    // Load existing images
+    const existingImages = product.product_images
+      ?.sort((a, b) => a.sort_order - b.sort_order)
+      .map(img => img.image_url) || [];
+    setProductImages(existingImages);
+    
     setIsDialogOpen(true);
   };
 
@@ -247,6 +298,11 @@ export default function AdminProducts() {
                     rows={4}
                   />
                 </div>
+                <ImageUpload
+                  onImagesUploaded={setProductImages}
+                  existingImages={productImages}
+                  maxImages={5}
+                />
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
