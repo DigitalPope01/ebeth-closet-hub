@@ -96,6 +96,38 @@ export type Database = {
           },
         ]
       }
+      coupon_grants: {
+        Row: {
+          coupon_id: string
+          granted_at: string | null
+          id: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          coupon_id: string
+          granted_at?: string | null
+          id?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string
+          granted_at?: string | null
+          id?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_grants_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupons: {
         Row: {
           code: string
@@ -553,6 +585,15 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      log_security_event: {
+        Args: {
+          _action: string
+          _details?: Json
+          _resource_id?: string
+          _resource_type?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       order_status:
