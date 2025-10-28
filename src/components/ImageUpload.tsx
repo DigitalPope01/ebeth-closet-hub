@@ -79,6 +79,18 @@ export default function ImageUpload({
 
     try {
       for (const file of files) {
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`${file.name} exceeds 5MB limit`);
+          continue;
+        }
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type.toLowerCase())) {
+          toast.error(`${file.name} must be JPEG, PNG, or WebP`);
+          continue;
+        }
         // Resize image to 800x800 for optimal display
         const resizedBlob = await resizeImage(file, 800, 800);
         

@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { orderStatusSchema } from "@/schemas/adminSchemas";
 
 type Order = {
   id: string;
@@ -64,6 +65,13 @@ export default function AdminOrders() {
   };
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
+    // Validate status
+    const validationResult = orderStatusSchema.safeParse(newStatus);
+    if (!validationResult.success) {
+      toast.error("Invalid order status");
+      return;
+    }
+
     const { error } = await supabase
       .from("orders")
       .update({ status: newStatus as "pending" | "processing" | "shipped" | "delivered" | "cancelled" })

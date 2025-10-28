@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { userRoleSchema } from "@/schemas/adminSchemas";
 
 type User = {
   id: string;
@@ -76,6 +77,13 @@ export default function AdminUsers() {
   };
 
   const handleRoleChange = async (userId: string, newRole: string) => {
+    // Validate role
+    const validationResult = userRoleSchema.safeParse(newRole);
+    if (!validationResult.success) {
+      toast.error("Invalid user role");
+      return;
+    }
+
     const existingRole = userRoles.find((r) => r.user_id === userId);
 
     if (existingRole) {

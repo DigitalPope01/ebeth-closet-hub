@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload";
+import { productSchema } from "@/schemas/adminSchemas";
 
 type Product = {
   id: string;
@@ -99,6 +100,24 @@ export default function AdminProducts() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate form data
+    const validationResult = productSchema.safeParse({
+      name: formData.name,
+      price: parseFloat(formData.price),
+      original_price: null,
+      stock_quantity: parseInt(formData.stock_quantity),
+      category_id: formData.category_id,
+      subcategory: formData.subcategory || null,
+      description: formData.description || null,
+      is_active: formData.is_active,
+    });
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(err => err.message).join(", ");
+      toast.error(`Validation failed: ${errors}`);
+      return;
+    }
 
     const productData = {
       name: formData.name,
