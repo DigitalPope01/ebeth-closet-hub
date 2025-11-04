@@ -83,6 +83,7 @@ export default function Accessories() {
   };
 
   const subcategories = [
+    { id: "bags", name: "Bags" },
     { id: "watches", name: "Watches" },
     { id: "belts", name: "Belts" },
     { id: "sunglasses", name: "Sunglasses" },

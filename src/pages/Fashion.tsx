@@ -85,7 +85,6 @@ export default function Fashion() {
   const subcategories = [
     { id: "clothing", name: "Clothing" },
     { id: "shoes", name: "Shoes" },
-    { id: "bags", name: "Bags" },
     { id: "jewelry", name: "Jewelry" }
   ];
 

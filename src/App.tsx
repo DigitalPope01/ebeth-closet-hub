@@ -13,6 +13,7 @@ import Categories from "./pages/Categories";
 import Fashion from "./pages/Fashion";
 import Accessories from "./pages/Accessories";
 import Household from "./pages/Household";
+import Deals from "./pages/Deals";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders";
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/fashion" element={<Fashion />} />
             <Route path="/accessories" element={<Accessories />} />
             <Route path="/household" element={<Household />} />
+            <Route path="/deals" element={<Deals />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/orders" element={<Orders />} />
@@ -50,7 +52,6 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/install" element={<InstallPWA />} />
-            <Route path="/deals" element={<Shop />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/users" element={<AdminUsers />} />

@@ -95,9 +95,6 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => navigate("/fashion?sub=shoes")}>
                   Shoes
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/fashion?sub=bags")}>
-                  Bags
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/fashion?sub=jewelry")}>
                   Jewelry
                 </DropdownMenuItem>
@@ -110,6 +107,9 @@ export default function Navbar() {
                 Accessories <ChevronDown className="ml-1 h-3 w-3" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => navigate("/accessories?sub=bags")}>
+                  Bags
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/accessories?sub=watches")}>
                   Watches
                 </DropdownMenuItem>
@@ -275,9 +275,6 @@ export default function Navbar() {
                   <Link to="/fashion?sub=shoes" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
                     Shoes
                   </Link>
-                  <Link to="/fashion?sub=bags" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Bags
-                  </Link>
                   <Link to="/fashion?sub=jewelry" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
                     Jewelry
                   </Link>
@@ -294,6 +291,9 @@ export default function Navbar() {
                   Accessories
                 </Link>
                 <div className="pl-4 space-y-2 text-sm">
+                  <Link to="/accessories?sub=bags" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
+                    Bags
+                  </Link>
                   <Link to="/accessories?sub=watches" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
                     Watches
                   </Link>
