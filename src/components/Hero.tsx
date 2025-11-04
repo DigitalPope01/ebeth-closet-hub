@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, UserPlus } from "lucide-react";
+import { ArrowRight, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import heroFashion from "@/assets/hero-fashion.jpg";
@@ -18,6 +18,14 @@ export default function Hero() {
     { url: accessoriesImg, alt: "Accessories" },
     { url: householdImg, alt: "Household Items" },
   ];
+
+  const nextSlide = () => {
+    setCurrentImage((prev) => (prev + 1) % heroImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentImage((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+  };
 
   return (
     <section className="relative h-[600px] md:h-[700px] overflow-hidden group">
@@ -66,6 +74,22 @@ export default function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
 
       {/* Image Navigation Dots */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
