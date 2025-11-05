@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 interface Product {
   id: string;
@@ -18,12 +24,22 @@ interface Product {
   product_images: { image_url: string }[];
 }
 
+interface SearchSuggestion {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+}
+
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
   const [searchQuery, setSearchQuery] = useState(query);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -47,7 +63,7 @@ export default function SearchResults() {
           slug,
           product_images (image_url)
         `)
-        .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
+        .or(`name.ilike.%${query}%,description.ilike.%${query}%,subcategory.ilike.%${query}%`)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
 
@@ -60,11 +76,56 @@ export default function SearchResults() {
     fetchProducts();
   }, [query]);
 
+  // Fetch search suggestions
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (searchQuery.trim().length < 2) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("products")
+        .select("id, name, slug, price")
+        .or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,subcategory.ilike.%${searchQuery}%`)
+        .eq("is_active", true)
+        .limit(5);
+
+      if (data) {
+        setSuggestions(data);
+        setShowSuggestions(true);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       setSearchParams({ q: searchQuery.trim() });
+      setShowSuggestions(false);
     }
+  };
+
+  const handleSuggestionClick = (productName: string) => {
+    setSearchParams({ q: productName });
+    setSearchQuery(productName);
+    setShowSuggestions(false);
   };
 
   return (
@@ -74,14 +135,39 @@ export default function SearchResults() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-6">Search Results</h1>
           <form onSubmit={handleSearch} className="relative max-w-2xl">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-            <Input
-              type="search"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-secondary/50 border-border focus:border-gold transition-colors h-12 text-base"
-            />
+            <div className="relative" ref={searchRef}>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 z-10" />
+              <Input
+                type="search"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
+                className="pl-10 bg-secondary/50 border-border focus:border-gold transition-colors h-12 text-base"
+              />
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-md shadow-lg z-50">
+                  <Command>
+                    <CommandList>
+                      <CommandGroup heading="Products">
+                        {suggestions.map((suggestion) => (
+                          <CommandItem
+                            key={suggestion.id}
+                            onSelect={() => handleSuggestionClick(suggestion.name)}
+                            className="cursor-pointer"
+                          >
+                            <div className="flex justify-between items-center w-full">
+                              <span>{suggestion.name}</span>
+                              <span className="text-gold text-sm">₦{suggestion.price.toLocaleString()}</span>
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </div>
+              )}
+            </div>
           </form>
         </div>
 

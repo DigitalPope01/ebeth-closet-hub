@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,15 +13,32 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/ebeth-logo.jpg";
+
+interface SearchSuggestion {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+}
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const searchRef = useRef<HTMLDivElement>(null);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -30,8 +47,53 @@ export default function Navbar() {
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
+      setShowSuggestions(false);
     }
   };
+
+  const handleSuggestionClick = (productName: string) => {
+    navigate(`/search?q=${encodeURIComponent(productName)}`);
+    setSearchQuery("");
+    setShowSuggestions(false);
+  };
+
+  // Fetch search suggestions
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (searchQuery.trim().length < 2) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("products")
+        .select("id, name, slug, price")
+        .or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,subcategory.ilike.%${searchQuery}%`)
+        .eq("is_active", true)
+        .limit(5);
+
+      if (data) {
+        setSuggestions(data);
+        setShowSuggestions(true);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -153,15 +215,38 @@ export default function Navbar() {
 
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="hidden lg:flex items-center flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <div className="relative w-full" ref={searchRef}>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
               <Input
                 type="search"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
                 className="pl-10 bg-secondary/50 border-border focus:border-gold transition-colors"
               />
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-md shadow-lg z-50">
+                  <Command>
+                    <CommandList>
+                      <CommandGroup heading="Products">
+                        {suggestions.map((suggestion) => (
+                          <CommandItem
+                            key={suggestion.id}
+                            onSelect={() => handleSuggestionClick(suggestion.name)}
+                            className="cursor-pointer"
+                          >
+                            <div className="flex justify-between items-center w-full">
+                              <span>{suggestion.name}</span>
+                              <span className="text-gold text-sm">₦{suggestion.price.toLocaleString()}</span>
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </div>
+              )}
             </div>
           </form>
 
