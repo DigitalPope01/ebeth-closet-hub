@@ -90,59 +90,83 @@ export default function Index() {
         {/* Features Bar */}
         <section className="bg-secondary py-8 border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="flex items-center gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
                 <div className="p-3 rounded-full bg-gold/10">
-                  <Truck className="h-6 w-6 text-gold" />
+                  <Truck className="h-5 w-5 md:h-6 md:w-6 text-gold" />
                 </div>
-                <div>
-                  <h3 className="font-semibold">Free Shipping</h3>
-                  <p className="text-sm text-muted-foreground">Orders over ₦150,000</p>
+                <div className="text-center md:text-left">
+                  <h3 className="font-semibold text-sm md:text-base">Free Shipping</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Orders over ₦150k</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
                 <div className="p-3 rounded-full bg-gold/10">
-                  <Shield className="h-6 w-6 text-gold" />
+                  <Shield className="h-5 w-5 md:h-6 md:w-6 text-gold" />
                 </div>
-                <div>
-                  <h3 className="font-semibold">Secure Payment</h3>
-                  <p className="text-sm text-muted-foreground">100% Protected</p>
+                <div className="text-center md:text-left">
+                  <h3 className="font-semibold text-sm md:text-base">Secure Payment</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">100% Protected</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
                 <div className="p-3 rounded-full bg-gold/10">
-                  <Headphones className="h-6 w-6 text-gold" />
+                  <Headphones className="h-5 w-5 md:h-6 md:w-6 text-gold" />
                 </div>
-                <div>
-                  <h3 className="font-semibold">24/7 Support</h3>
-                  <p className="text-sm text-muted-foreground">Dedicated service</p>
+                <div className="text-center md:text-left">
+                  <h3 className="font-semibold text-sm md:text-base">24/7 Support</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Dedicated service</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
                 <div className="p-3 rounded-full bg-gold/10">
-                  <TrendingUp className="h-6 w-6 text-gold" />
+                  <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-gold" />
                 </div>
-                <div>
-                  <h3 className="font-semibold">Curated Quality</h3>
-                  <p className="text-sm text-muted-foreground">Premium selection</p>
+                <div className="text-center md:text-left">
+                  <h3 className="font-semibold text-sm md:text-base">Curated Quality</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Premium selection</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Categories */}
-        <section className="py-20">
+        {/* Featured Products */}
+        <section className="py-12 md:py-20">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
+                Featured <span className="text-gold">Products</span>
+              </h2>
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
+                Hand-picked items from our latest collection
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} {...product} />
+              ))}
+            </div>
+            <div className="text-center">
+              <Button variant="luxury" size="lg" onClick={() => window.location.href = '/shop'}>
+                View All Products
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Categories */}
+        <section className="py-12 md:py-20 bg-secondary">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
                 Shop by <span className="text-gold">Category</span>
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
                 Discover our carefully curated collections designed to bring elegance to every aspect of your life
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8">
               {categories.map((category) => (
                 <CategoryCard key={category.title} {...category} />
               ))}
@@ -155,45 +179,21 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Featured Products */}
-        <section className="py-20 bg-secondary">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">
-                Featured <span className="text-gold">Products</span>
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Hand-picked items from our latest collection
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} {...product} />
-              ))}
-            </div>
-            <div className="text-center">
-              <Button variant="luxury" size="lg">
-                View All Products
-              </Button>
-            </div>
-          </div>
-        </section>
-
         {/* Weekly Deals Banner */}
-        <section className="py-20">
+        <section className="py-12 md:py-20">
           <div className="container mx-auto px-4">
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-hero p-12 md:p-20 text-center">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-hero p-8 md:p-20 text-center">
               <div className="relative z-10">
                 <div className="inline-block mb-4 px-4 py-2 bg-gold/20 backdrop-blur-sm rounded-full border border-gold">
                   <span className="text-gold text-sm font-semibold">Limited Time Offer</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 md:mb-6">
                   Weekly Deals Up to 40% Off
                 </h2>
-                <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                <p className="text-base md:text-xl text-white/80 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
                   Don't miss out on our exclusive weekly deals. New offers every week!
                 </p>
-                <Button variant="luxury" size="lg">
+                <Button variant="luxury" size="lg" onClick={() => window.location.href = '/deals'}>
                   Shop Weekly Deals
                 </Button>
               </div>
@@ -203,12 +203,12 @@ export default function Index() {
         </section>
 
         {/* Newsletter */}
-        <section className="py-20 bg-secondary">
+        <section className="py-12 md:py-20 bg-secondary">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
               Join Our <span className="text-gold">Exclusive</span> Community
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-4">
               Be the first to know about new arrivals, exclusive deals, and special promotions
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">

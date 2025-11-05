@@ -166,7 +166,7 @@ export default function Navbar() {
           </form>
 
           {/* Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             <Button 
               variant="ghost" 
               size="icon" 
@@ -175,7 +175,7 @@ export default function Navbar() {
             >
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="hover:text-gold">
+            <Button variant="ghost" size="icon" className="hover:text-gold hidden md:flex">
               <Heart className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon" className="relative hover:text-gold" onClick={() => navigate("/cart")}>
