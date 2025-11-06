@@ -13,11 +13,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      APP_DIR: ${{ vars.APP_DIR || secrets.APP_DIR }}     # e.g. /var/www/myapp
+      APP_DIR: ${{ vars.APP_DIR || secrets.APP_DIR }}   # e.g. /var/www/myapp
       SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}                   # e.g. deploy
-      SSH_PORT: ${{ secrets.SSH_PORT }}                   # e.g. 22
-      BUILD_DIR: dist                                     # change to 'build' if needed
+      SSH_USER: ${{ secrets.SSH_USER }}                 # e.g. deploy
+      SSH_PORT: ${{ secrets.SSH_PORT }}                 # e.g. 22
+      BUILD_DIR: dist                                   # change to 'build' if your output differs
 
     steps:
       - name: Checkout
@@ -47,24 +47,17 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
 
-      # Optional: quick visibility that the right key loaded
-      - name: Show loaded SSH keys (public)
-        run: ssh-add -L || true
-
-      # Optional: prove connectivity before deploying
-      - name: Test SSH connectivity
+      - name: Test SSH connectivity (optional but helpful)
         run: |
           set -euxo pipefail
           ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "echo CI-SSH-OK"
 
-      - name: Ensure server dirs & ownership
+      - name: Ensure server dirs
         run: |
           set -euxo pipefail
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" <<'EOSSH'
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" <<EOSSH
           set -e
           mkdir -p "$APP_DIR/releases"
-          # app dir should already be owned by $SSH_USER; if not, do this once manually:
-          # sudo chown -R $SSH_USER:$SSH_USER "$APP_DIR"
           EOSSH
 
       - name: Upload release
@@ -73,13 +66,12 @@ jobs:
           rsync -azv --delete -e "ssh -p $SSH_PORT" \
             "$BUILD_DIR"/ "$SSH_USER@$SSH_HOST:$APP_DIR/releases/${GITHUB_SHA}/"
 
-      - name: Activate release & (optionally) reload Nginx
+      - name: Activate release & reload Nginx (reload is optional)
         run: |
           set -euxo pipefail
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" <<'EOSSH'
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" <<EOSSH
           set -e
           ln -sfn "$APP_DIR/releases/${GITHUB_SHA}" "$APP_DIR/current"
-          # nginx reload is only needed if you changed its config;
-          # for static file updates, Nginx serves the new files via the symlink.
+          # Only needed if nginx config changed; safe to leave as-is.
           sudo -n nginx -t && sudo -n systemctl reload nginx || true
           EOSSH
