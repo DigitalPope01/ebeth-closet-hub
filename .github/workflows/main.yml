@@ -2,8 +2,8 @@ name: Deploy frontend to VPS
 
 on:
   push:
-    branches: [ "main" ]   # change if your default branch is different
-  workflow_dispatch:       # lets you run it manually too
+    branches: [ "main" ]
+  workflow_dispatch:
 
 concurrency:
   group: deploy-frontend
@@ -12,12 +12,12 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     env:
-      APP_DIR: ${{ vars.APP_DIR || secrets.APP_DIR }}   # prefer variable, fallback to secret
+      APP_DIR: ${{ vars.APP_DIR || secrets.APP_DIR }}     # e.g. /var/www/myapp
       SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_USER: ${{ secrets.SSH_USER }}                   # e.g. deploy
+      SSH_PORT: ${{ secrets.SSH_PORT }}                   # e.g. 22
+      BUILD_DIR: dist                                     # change to 'build' if needed
 
     steps:
       - name: Checkout
@@ -31,11 +31,10 @@ jobs:
 
       - name: Install deps & build
         run: |
-          npm ci
+          set -euxo pipefail
+          npm ci || (npm install --package-lock-only && npm ci)
           npm run build
-        # If your build output is NOT ./dist, set an env and adjust below:
-        env:
-          BUILD_DIR: dist
+          test -d "$BUILD_DIR" || (echo "Build dir '$BUILD_DIR' not found" && exit 1)
 
       - name: Start SSH agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -44,27 +43,43 @@ jobs:
 
       - name: Trust host (known_hosts)
         run: |
+          set -euxo pipefail
           mkdir -p ~/.ssh
           ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
 
-      - name: Create app dirs on server (first-run safe)
+      # Optional: quick visibility that the right key loaded
+      - name: Show loaded SSH keys (public)
+        run: ssh-add -L || true
+
+      # Optional: prove connectivity before deploying
+      - name: Test SSH connectivity
         run: |
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "\
-            sudo mkdir -p \"$APP_DIR/releases\" && \
-            sudo mkdir -p \"$APP_DIR\" && \
-            sudo chown -R $SSH_USER:$SSH_USER \"$APP_DIR\" \
-          "
+          set -euxo pipefail
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "echo CI-SSH-OK"
+
+      - name: Ensure server dirs & ownership
+        run: |
+          set -euxo pipefail
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" <<'EOSSH'
+          set -e
+          mkdir -p "$APP_DIR/releases"
+          # app dir should already be owned by $SSH_USER; if not, do this once manually:
+          # sudo chown -R $SSH_USER:$SSH_USER "$APP_DIR"
+          EOSSH
 
       - name: Upload release
         run: |
-          rsync -az --delete -e "ssh -p $SSH_PORT" \
-            ./dist/ "$SSH_USER@$SSH_HOST:$APP_DIR/releases/${GITHUB_SHA}/"
+          set -euxo pipefail
+          rsync -azv --delete -e "ssh -p $SSH_PORT" \
+            "$BUILD_DIR"/ "$SSH_USER@$SSH_HOST:$APP_DIR/releases/${GITHUB_SHA}/"
 
-      - name: Activate release & reload Nginx
+      - name: Activate release & (optionally) reload Nginx
         run: |
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" bash -lc "\
-            set -euo pipefail; \
-            ln -sfn \"$APP_DIR/releases/${GITHUB_SHA}\" \"$APP_DIR/current\"; \
-            sudo nginx -t; \
-            sudo systemctl reload nginx \
-          "
+          set -euxo pipefail
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" <<'EOSSH'
+          set -e
+          ln -sfn "$APP_DIR/releases/${GITHUB_SHA}" "$APP_DIR/current"
+          # nginx reload is only needed if you changed its config;
+          # for static file updates, Nginx serves the new files via the symlink.
+          sudo -n nginx -t && sudo -n systemctl reload nginx || true
+          EOSSH
