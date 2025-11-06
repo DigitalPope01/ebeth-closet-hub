@@ -7,6 +7,12 @@ import accessoriesImg from "@/assets/category-accessories.jpg";
 import householdImg from "@/assets/category-household.jpg";
 import eveningDress from "@/assets/products/evening-dress.jpg";
 import leatherBag from "@/assets/products/leather-handbag.jpg";
+import heroTravelBags from "@/assets/hero-travel-bags.jpg";
+import heroMakeupKits from "@/assets/hero-makeup-kits.jpg";
+import heroSunshades from "@/assets/hero-sunshades.jpg";
+import heroRings from "@/assets/hero-rings.jpg";
+import heroGiftBoxes from "@/assets/hero-gift-boxes.jpg";
+import heroCorporateJackets from "@/assets/hero-corporate-jackets.jpg";
 
 export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
@@ -17,6 +23,12 @@ export default function Hero() {
     { url: leatherBag, alt: "Leather Accessories" },
     { url: accessoriesImg, alt: "Accessories" },
     { url: householdImg, alt: "Household Items" },
+    { url: heroTravelBags, alt: "Exotic Traveling Bags & Boxes" },
+    { url: heroMakeupKits, alt: "Premium Make-up Kits" },
+    { url: heroSunshades, alt: "Designer Sunshades" },
+    { url: heroRings, alt: "Luxury Rings" },
+    { url: heroGiftBoxes, alt: "Elegant Gift Boxes" },
+    { url: heroCorporateJackets, alt: "Corporate Jackets" },
   ];
 
   const nextSlide = () => {
