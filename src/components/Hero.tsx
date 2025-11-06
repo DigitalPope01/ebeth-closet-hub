@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import heroFashion from "@/assets/hero-fashion.jpg";
 import accessoriesImg from "@/assets/category-accessories.jpg";
@@ -26,6 +26,15 @@ export default function Hero() {
   const prevSlide = () => {
     setCurrentImage((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   };
+
+  // Auto-scroll effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [currentImage]);
 
   return (
     <section className="relative h-[600px] md:h-[700px] overflow-hidden group">

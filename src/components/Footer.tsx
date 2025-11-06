@@ -147,13 +147,18 @@ export default function Footer() {
             <p className="text-primary-foreground/60 text-sm">
               © 2025 Ebeth Boutique & Exclusive Store. All rights reserved.
             </p>
-            <div className="flex gap-4 text-sm">
-              <Link to="/privacy" className="text-primary-foreground/60 hover:text-gold transition-colors">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="text-primary-foreground/60 hover:text-gold transition-colors">
-                Terms of Service
-              </Link>
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="flex gap-4 text-sm">
+                <Link to="/privacy" className="text-primary-foreground/60 hover:text-gold transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms" className="text-primary-foreground/60 hover:text-gold transition-colors">
+                  Terms of Service
+                </Link>
+              </div>
+              <p className="text-primary-foreground/60 text-sm">
+                Powered By <span className="text-gold font-semibold">New Tech Hub</span>
+              </p>
             </div>
           </div>
         </div>
