@@ -20,8 +20,10 @@ import Orders from "./pages/Orders";
 import Wishlist from "./pages/Wishlist";
 import About from "./pages/About";
 import SearchResults from "./pages/SearchResults";
+import ProductDetail from "./pages/ProductDetail";
 import InstallPWA from "./pages/InstallPWA";
 import Admin from "./pages/Admin";
+import LoadingScreen from "./components/LoadingScreen";
 import AdminProducts from "./pages/AdminProducts";
 import AdminUsers from "./pages/AdminUsers";
 import AdminOrders from "./pages/AdminOrders";
@@ -34,6 +36,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <LoadingScreen />
       <BrowserRouter>
         <AuthProvider>
           <Routes>
@@ -51,6 +54,7 @@ const App = () => (
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/about" element={<About />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/install" element={<InstallPWA />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<AdminProducts />} />

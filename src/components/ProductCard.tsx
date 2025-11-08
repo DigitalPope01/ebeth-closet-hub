@@ -67,6 +67,10 @@ export default function ProductCard({
     }).format(price);
   };
 
+  const handleProductClick = () => {
+    navigate(`/product/${id}`);
+  };
+
   return (
     <div className="group relative bg-card rounded-lg shadow-card hover:shadow-luxury transition-all duration-300">
       {/* Badges */}
@@ -88,7 +92,10 @@ export default function ProductCard({
       </button>
 
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden rounded-t-lg bg-secondary">
+      <div 
+        className="relative aspect-square overflow-hidden rounded-t-lg bg-secondary cursor-pointer"
+        onClick={handleProductClick}
+      >
         <img
           src={image}
           alt={`${name} - Premium boutique product`}
@@ -100,7 +107,10 @@ export default function ProductCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-gold transition-colors">
+        <h3 
+          className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-gold transition-colors cursor-pointer"
+          onClick={handleProductClick}
+        >
           {name}
         </h3>
 

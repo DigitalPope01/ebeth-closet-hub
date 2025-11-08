@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/ebeth-logo.jpg";
 
 const signInSchema = z.object({
@@ -23,12 +25,17 @@ const signUpSchema = signInSchema.extend({
   path: ["confirmPassword"],
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
 export default function Auth() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, signIn, signUp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const defaultTab = searchParams.get("tab") || "signin";
 
@@ -112,6 +119,45 @@ export default function Auth() {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrors({});
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+
+    try {
+      const result = forgotPasswordSchema.safeParse({ email });
+      if (!result.success) {
+        const fieldErrors: Record<string, string> = {};
+        result.error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as string] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        setResetEmailSent(true);
+        toast.success("Password reset email sent! Check your inbox.");
+      }
+    } catch (error) {
+      console.error("Password reset error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
       <Card className="w-full max-w-md">
@@ -124,9 +170,10 @@ export default function Auth() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="forgot">Forgot Password</TabsTrigger>
             </TabsList>
 
             <TabsContent value="signin">
@@ -210,6 +257,46 @@ export default function Auth() {
                   Create Account
                 </Button>
               </form>
+            </TabsContent>
+
+            <TabsContent value="forgot">
+              {resetEmailSent ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="text-green-500 text-5xl">✓</div>
+                  <p className="text-foreground font-semibold">Check your email!</p>
+                  <p className="text-sm text-muted-foreground">
+                    We've sent password reset instructions to your email address.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setResetEmailSent(false)}
+                    className="mt-4"
+                  >
+                    Back to Sign In
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Enter your email address and we'll send you instructions to reset your password.
+                  </p>
+                  <div className="space-y-2">
+                    <Label htmlFor="forgot-email">Email</Label>
+                    <Input
+                      id="forgot-email"
+                      name="email"
+                      type="email"
+                      placeholder="hello@example.com"
+                      required
+                    />
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  </div>
+                  <Button type="submit" variant="luxury" className="w-full" disabled={loading}>
+                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Send Reset Link
+                  </Button>
+                </form>
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>
