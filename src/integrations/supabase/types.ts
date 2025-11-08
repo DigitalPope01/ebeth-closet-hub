@@ -226,14 +226,18 @@ export type Database = {
       }
       orders: {
         Row: {
+          cancelled_at: string | null
+          carrier: string | null
           coupon_code: string | null
           created_at: string | null
+          delivered_at: string | null
           delivery_slot: string | null
           discount_amount: number | null
           id: string
           notes: string | null
           order_number: string
           phone: string
+          shipped_at: string | null
           shipping_address: string
           shipping_city: string
           shipping_cost: number | null
@@ -242,18 +246,23 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"] | null
           subtotal: number
           total_amount: number
+          tracking_number: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          cancelled_at?: string | null
+          carrier?: string | null
           coupon_code?: string | null
           created_at?: string | null
+          delivered_at?: string | null
           delivery_slot?: string | null
           discount_amount?: number | null
           id?: string
           notes?: string | null
           order_number: string
           phone: string
+          shipped_at?: string | null
           shipping_address: string
           shipping_city: string
           shipping_cost?: number | null
@@ -262,18 +271,23 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"] | null
           subtotal: number
           total_amount: number
+          tracking_number?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          cancelled_at?: string | null
+          carrier?: string | null
           coupon_code?: string | null
           created_at?: string | null
+          delivered_at?: string | null
           delivery_slot?: string | null
           discount_amount?: number | null
           id?: string
           notes?: string | null
           order_number?: string
           phone?: string
+          shipped_at?: string | null
           shipping_address?: string
           shipping_city?: string
           shipping_cost?: number | null
@@ -282,6 +296,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"] | null
           subtotal?: number
           total_amount?: number
+          tracking_number?: string | null
           updated_at?: string | null
           user_id?: string
         }
