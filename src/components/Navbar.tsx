@@ -111,85 +111,27 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 flex-shrink-0 hover:opacity-80 transition-opacity">
             <div className="h-12 w-12 md:h-14 md:w-14 rounded-full border-2 border-gold/30 p-0.5 hover:border-gold transition-colors">
-              <img src={logo} alt="Ebeth Boutique" className="h-full w-full rounded-full object-cover" />
+              <img src={logo} alt="Ebeth Boutique - Premium Fashion Boutique in Abuja Nigeria" className="h-full w-full rounded-full object-cover" />
             </div>
-            <span className="text-base md:text-xl font-bold tracking-tight text-left">Ebeth Boutique and Exquisite Store</span>
+            <span className="text-base md:text-xl font-bold tracking-tight text-left">Ebeth Boutique</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Simplified */}
+          <div className="hidden md:flex items-center space-x-6">
             <Link to="/shop" className="text-sm font-semibold hover:text-gold transition-colors">
-              Shop
+              Shop All
             </Link>
-            <Link to="/categories" className="text-sm font-semibold hover:text-gold transition-colors">
-              Categories
+            <Link to="/fashion" className="text-sm font-semibold hover:text-gold transition-colors">
+              Fashion
             </Link>
-            
-            {/* Fashion Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-sm font-semibold hover:text-gold transition-colors">
-                Fashion <ChevronDown className="ml-1 h-3 w-3" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate("/fashion?sub=clothing")}>
-                  Clothing
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/fashion?sub=shoes")}>
-                  Shoes
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/fashion?sub=jewelry")}>
-                  Jewelry
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Accessories Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-sm font-semibold hover:text-gold transition-colors">
-                Accessories <ChevronDown className="ml-1 h-3 w-3" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate("/accessories?sub=bags")}>
-                  Bags
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/accessories?sub=watches")}>
-                  Watches
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/accessories?sub=belts")}>
-                  Belts
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/accessories?sub=sunglasses")}>
-                  Sunglasses
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/accessories?sub=wallets")}>
-                  Wallets
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Household Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-sm font-semibold hover:text-gold transition-colors">
-                Household <ChevronDown className="ml-1 h-3 w-3" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => navigate("/household?sub=decor")}>
-                  Home Decor
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/household?sub=kitchen")}>
-                  Kitchen
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/household?sub=bedding")}>
-                  Bedding
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/household?sub=storage")}>
-                  Storage
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
+            <Link to="/accessories" className="text-sm font-semibold hover:text-gold transition-colors">
+              Accessories
+            </Link>
+            <Link to="/household" className="text-sm font-semibold hover:text-gold transition-colors">
+              Household
+            </Link>
             <Link to="/deals" className="text-sm font-semibold text-gold hover:text-gold-light transition-colors">
-              Weekly Deals
+              Deals
             </Link>
           </div>
 
@@ -267,81 +209,23 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Simplified */}
         {isMenuOpen && <div className="md:hidden py-4 border-t border-border animate-in slide-in-from-top">
-            <div className="flex flex-col space-y-4">
-              <Link to="/shop" className="text-sm font-semibold hover:text-gold transition-colors" onClick={() => setIsMenuOpen(false)}>
-                Shop
+            <div className="flex flex-col space-y-3">
+              <Link to="/shop" className="text-base font-semibold hover:text-gold transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Shop All
               </Link>
-              <Link to="/categories" className="text-sm font-semibold hover:text-gold transition-colors" onClick={() => setIsMenuOpen(false)}>
-                Categories
+              <Link to="/fashion" className="text-base font-semibold hover:text-gold transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Fashion
               </Link>
-              
-              {/* Fashion Mobile */}
-              <div className="space-y-2">
-                <Link to="/fashion" className="text-sm font-semibold hover:text-gold transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  Fashion
-                </Link>
-                <div className="pl-4 space-y-2 text-sm">
-                  <Link to="/fashion?sub=clothing" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Clothing
-                  </Link>
-                  <Link to="/fashion?sub=shoes" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Shoes
-                  </Link>
-                  <Link to="/fashion?sub=jewelry" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Jewelry
-                  </Link>
-                </div>
-              </div>
-
-              {/* Accessories Mobile */}
-              <div className="space-y-2">
-                <Link to="/accessories" className="text-sm font-semibold hover:text-gold transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  Accessories
-                </Link>
-                <div className="pl-4 space-y-2 text-sm">
-                  <Link to="/accessories?sub=bags" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Bags
-                  </Link>
-                  <Link to="/accessories?sub=watches" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Watches
-                  </Link>
-                  <Link to="/accessories?sub=belts" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Belts
-                  </Link>
-                  <Link to="/accessories?sub=sunglasses" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Sunglasses
-                  </Link>
-                  <Link to="/accessories?sub=wallets" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Wallets
-                  </Link>
-                </div>
-              </div>
-
-              {/* Household Mobile */}
-              <div className="space-y-2">
-                <Link to="/household" className="text-sm font-semibold hover:text-gold transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  Household
-                </Link>
-                <div className="pl-4 space-y-2 text-sm">
-                  <Link to="/household?sub=decor" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Home Decor
-                  </Link>
-                  <Link to="/household?sub=kitchen" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Kitchen
-                  </Link>
-                  <Link to="/household?sub=bedding" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Bedding
-                  </Link>
-                  <Link to="/household?sub=storage" className="block text-muted-foreground hover:text-gold" onClick={() => setIsMenuOpen(false)}>
-                    Storage
-                  </Link>
-                </div>
-              </div>
-
-              <Link to="/deals" className="text-sm font-semibold text-gold hover:text-gold-light transition-colors" onClick={() => setIsMenuOpen(false)}>
-                Weekly Deals
+              <Link to="/accessories" className="text-base font-semibold hover:text-gold transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Accessories
+              </Link>
+              <Link to="/household" className="text-base font-semibold hover:text-gold transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Household
+              </Link>
+              <Link to="/deals" className="text-base font-semibold text-gold hover:text-gold-light transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Deals
               </Link>
             </div>
           </div>}

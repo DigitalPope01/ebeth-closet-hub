@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Truck, Shield, Headphones } from "lucide-react";
 
@@ -82,6 +83,12 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Ebeth Boutique Abuja – Exquisite Men's and Women's Fashion & Accessories"
+        description="Discover premium fashion, luxury accessories, and household essentials at Ebeth Boutique in Abuja. Shop exquisite designer collections for men and women with fast delivery across Nigeria."
+        keywords="Ebeth Boutique Abuja, luxury fashion Nigeria, boutique Abuja, exquisite fashion, women's fashion, men's fashion, designer accessories, premium boutique Nigeria"
+        canonicalUrl="/"
+      />
       <Navbar />
       <main>
         <Hero />
@@ -136,10 +143,10 @@ export default function Index() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-                Featured <span className="text-gold">Products</span>
+                Featured Products from Ebeth Boutique Abuja
               </h2>
               <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-                Hand-picked items from our latest collection
+                Hand-picked exquisite fashion items from our latest designer collection
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -160,10 +167,10 @@ export default function Index() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-                Shop by <span className="text-gold">Category</span>
+                Shop Fashion, Accessories & Household Essentials
               </h2>
               <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-                Discover our carefully curated collections designed to bring elegance to every aspect of your life
+                Discover our carefully curated collections of exquisite fashion, luxury accessories, and premium household items in Abuja
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8">

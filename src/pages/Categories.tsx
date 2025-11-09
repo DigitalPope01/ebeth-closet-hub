@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Package } from "lucide-react";
 
@@ -58,15 +59,21 @@ export default function Categories() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Shop by Category - Fashion, Accessories & Household | Ebeth Boutique Abuja"
+        description="Browse our curated categories at Ebeth Boutique Abuja. Explore premium fashion, luxury accessories, and exquisite household items. Shop designer collections in Nigeria."
+        keywords="boutique categories Abuja, fashion categories Nigeria, luxury accessories, household essentials, Ebeth Boutique shop"
+        canonicalUrl="/categories"
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Browse <span className="text-gold">Categories</span>
+            Shop by Category
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
-            Explore our curated collections and find exactly what you're looking for
+            Explore our curated collections of exquisite fashion, luxury accessories, and premium household items in Abuja
           </p>
         </div>
 
@@ -95,7 +102,7 @@ export default function Categories() {
                     {category.image_url ? (
                       <img
                         src={category.image_url}
-                        alt={category.name}
+                        alt={`${category.name} - Premium ${category.name.toLowerCase()} collection at Ebeth Boutique Abuja featuring designer pieces and luxury items`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (

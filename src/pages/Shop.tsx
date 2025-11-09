@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -98,16 +99,22 @@ export default function Shop() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={`${categorySlug ? categories.find((c) => c.slug === categorySlug)?.name || 'Shop' : 'Shop All Products'} - Luxury Fashion & Accessories | Ebeth Boutique Abuja`}
+        description="Shop exquisite designer fashion, luxury accessories, and premium household items at Ebeth Boutique Abuja. Discover curated collections of high-quality products in Nigeria."
+        keywords="shop fashion Abuja, luxury boutique Nigeria, designer fashion, premium accessories, Ebeth Boutique products"
+        canonicalUrl="/shop"
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4">
             {categorySlug
               ? categories.find((c) => c.slug === categorySlug)?.name || "Shop"
-              : "All Products"}
+              : "Shop All Products"}
           </h1>
           <p className="text-muted-foreground">
-            Discover our curated collection of premium fashion and lifestyle essentials
+            Discover our curated collection of exquisite fashion, luxury accessories, and premium lifestyle essentials at Ebeth Boutique Abuja
           </p>
         </div>
 

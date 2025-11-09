@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -99,12 +100,18 @@ export default function Household() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={`${getTitle()} - Premium Home Essentials & Decor | Ebeth Boutique Abuja`}
+        description={`Shop exquisite ${getTitle().toLowerCase()} at Ebeth Boutique Abuja. Discover premium home decor, kitchen essentials, bedding, and storage solutions in Nigeria.`}
+        keywords={`${getTitle().toLowerCase()} Abuja, home essentials Nigeria, premium home decor, kitchen items, bedding, Ebeth Boutique household`}
+        canonicalUrl="/household"
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4">{getTitle()}</h1>
           <p className="text-muted-foreground">
-            Discover our collection of premium home essentials
+            Discover our collection of exquisite home essentials and premium decor items in Abuja
           </p>
         </div>
 
