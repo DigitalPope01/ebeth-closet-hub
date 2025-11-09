@@ -18,17 +18,17 @@ export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
   
   const heroImages = [
-    { url: heroFashion, alt: "Exquisite women's fashion collection at Ebeth Boutique Abuja" },
-    { url: eveningDress, alt: "Designer evening dresses and luxury women's fashion in Abuja" },
-    { url: leatherBag, alt: "Premium leather handbags and luxury accessories Nigeria" },
-    { url: accessoriesImg, alt: "Designer fashion accessories and jewelry at Ebeth Boutique" },
-    { url: householdImg, alt: "Premium household essentials and home decor in Abuja" },
-    { url: heroTravelBags, alt: "Luxury travel bags and exotic luggage collection Nigeria" },
-    { url: heroMakeupKits, alt: "Professional makeup kits and beauty accessories Abuja" },
-    { url: heroSunshades, alt: "Designer sunglasses and premium eyewear fashion accessories" },
-    { url: heroRings, alt: "Exquisite jewelry rings and luxury accessories Nigeria" },
-    { url: heroGiftBoxes, alt: "Elegant gift boxes and premium packaging Ebeth Boutique" },
-    { url: heroCorporateJackets, alt: "Professional corporate jackets and business fashion Abuja" },
+    { url: heroFashion, alt: "Fashion Collection" },
+    { url: eveningDress, alt: "Evening Dresses" },
+    { url: leatherBag, alt: "Leather Accessories" },
+    { url: accessoriesImg, alt: "Accessories" },
+    { url: householdImg, alt: "Household Items" },
+    { url: heroTravelBags, alt: "Exotic Traveling Bags & Boxes" },
+    { url: heroMakeupKits, alt: "Premium Make-up Kits" },
+    { url: heroSunshades, alt: "Designer Sunshades" },
+    { url: heroRings, alt: "Luxury Rings" },
+    { url: heroGiftBoxes, alt: "Elegant Gift Boxes" },
+    { url: heroCorporateJackets, alt: "Corporate Jackets" },
   ];
 
   const nextSlide = () => {
@@ -70,12 +70,14 @@ export default function Hero() {
             <span className="text-gold text-sm font-semibold">New Collection 2025</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Exquisite Fashion
+            Boutique Elegance
             <br />
-            <span className="text-gold">Boutique in Abuja</span>
+            <span className="text-gold">Meets Everyday</span>
+            <br />
+            Convenience
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-white/90">
-            Discover curated designer fashion, luxury accessories, and premium household essentials at Ebeth Boutique
+            Discover curated fashion, accessories, and lifestyle essentials — all in one exclusive destination
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link to="/shop">

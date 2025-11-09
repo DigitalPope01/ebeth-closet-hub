@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SEO from "@/components/SEO";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -119,33 +118,6 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SEO
-        title={`${product.name} - Premium Fashion & Accessories | Ebeth Boutique Abuja`}
-        description={`${product.description?.substring(0, 150) || `Shop ${product.name} at Ebeth Boutique Abuja. Exquisite designer fashion and luxury accessories in Nigeria.`}`}
-        keywords={`${product.name}, ${product.subcategory || 'fashion'} Abuja, luxury ${product.subcategory || 'fashion'} Nigeria, Ebeth Boutique, designer ${product.subcategory || 'fashion'}`}
-        canonicalUrl={`/product/${product.id}`}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "Product",
-          "name": product.name,
-          "description": product.description,
-          "image": images[0]?.image_url,
-          "offers": {
-            "@type": "Offer",
-            "price": product.price,
-            "priceCurrency": "NGN",
-            "availability": product.stock_quantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-            "seller": {
-              "@type": "Organization",
-              "name": "Ebeth Boutique & Exquisite Store"
-            }
-          },
-          "brand": {
-            "@type": "Brand",
-            "name": "Ebeth Boutique"
-          }
-        }}
-      />
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">
         <Button
@@ -169,7 +141,7 @@ export default function ProductDetail() {
               )}
               <img
                 src={images[selectedImage].image_url}
-                alt={`${product.name} - Luxury ${product.subcategory || 'fashion'} at Ebeth Boutique Abuja Nigeria`}
+                alt={images[selectedImage].alt_text || product.name}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -184,7 +156,7 @@ export default function ProductDetail() {
                 >
                   <img
                     src={img.image_url}
-                    alt={`${product.name} ${product.subcategory || 'fashion'} view ${idx + 1} - Designer accessories Ebeth Boutique Abuja`}
+                    alt={img.alt_text || `${product.name} view ${idx + 1}`}
                     className="w-full h-full object-cover"
                   />
                 </button>

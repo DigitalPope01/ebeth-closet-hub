@@ -1,4 +1,4 @@
-# Ebeth Boutique & Exquisite Store - Robots.txt
+# Ebeth Boutique & Exclusive Store - Robots.txt
 User-agent: *
 Allow: /
 Allow: /shop
@@ -6,19 +6,14 @@ Allow: /categories
 Allow: /fashion
 Allow: /accessories
 Allow: /household
-Allow: /deals
 Allow: /about
 
-# Block auth and user pages
 Disallow: /admin
 Disallow: /auth
 Disallow: /cart
 Disallow: /orders
 Disallow: /profile
 Disallow: /wishlist
-
-# Sitemap location
-Sitemap: https://ebeth-boutique.lovable.app/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1

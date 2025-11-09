@@ -15,7 +15,7 @@ export default function CategoryCard({ title, description, image, link }: Catego
         <div className="aspect-square overflow-hidden">
           <img
             src={image}
-            alt={`${title} - Exquisite ${title.toLowerCase()} collection at Ebeth Boutique Abuja featuring premium designer pieces and luxury accessories`}
+            alt={`${title} - Premium boutique category`}
             loading="lazy"
             decoding="async"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

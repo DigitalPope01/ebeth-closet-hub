@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -101,12 +100,6 @@ export default function Accessories() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO
-        title={`${getTitle()} - Luxury Designer Accessories | Ebeth Boutique Abuja`}
-        description={`Shop exquisite ${getTitle().toLowerCase()} at Ebeth Boutique Abuja. Premium designer handbags, watches, jewelry, and fashion accessories in Nigeria.`}
-        keywords={`${getTitle().toLowerCase()} Abuja, luxury ${getTitle().toLowerCase()}, designer accessories Nigeria, boutique accessories, Ebeth Boutique`}
-        canonicalUrl="/accessories"
-      />
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">

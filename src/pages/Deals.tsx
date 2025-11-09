@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -77,12 +76,6 @@ export default function Deals() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO
-        title="Weekly Deals - Up to 40% Off Fashion & Accessories | Ebeth Boutique Abuja"
-        description="Shop exclusive weekly deals at Ebeth Boutique Abuja. Save up to 40% on premium designer fashion, luxury accessories, and exquisite household items in Nigeria."
-        keywords="fashion deals Abuja, luxury boutique sale Nigeria, weekly deals, designer fashion discount, Ebeth Boutique sale"
-        canonicalUrl="/deals"
-      />
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
