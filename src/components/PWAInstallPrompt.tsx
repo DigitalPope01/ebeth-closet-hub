@@ -60,7 +60,7 @@ export default function PWAInstallPrompt() {
             <Download className="h-5 w-5 text-gold" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold mb-1">Install Ebeth Exclusive</h3>
+            <h3 className="font-semibold mb-1">Install Ebeth Boutique and Exquisite Store</h3>
             <p className="text-sm text-muted-foreground mb-3">
               Get faster access and work offline
             </p>

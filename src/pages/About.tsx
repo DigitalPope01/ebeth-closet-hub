@@ -11,7 +11,7 @@ export default function About() {
         </h1>
         <div className="max-w-3xl space-y-6 text-foreground/80">
           <p className="text-lg">
-            Welcome to <span className="font-bold text-gold">Ebeth Boutique & Exclusive Store</span>, 
+            Welcome to <span className="font-bold text-gold">Ebeth Boutique and Exquisite Store</span>, 
             your premier destination for premium fashion and lifestyle essentials in Nigeria.
           </p>
           <p>

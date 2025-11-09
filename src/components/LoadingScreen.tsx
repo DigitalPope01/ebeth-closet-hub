@@ -23,13 +23,13 @@ export default function LoadingScreen() {
           </div>
           <img 
             src={logo} 
-            alt="Ebeth Exclusive Stores" 
+            alt="Ebeth Boutique and Exquisite Store" 
             className="h-32 w-32 mx-auto rounded-full border-4 border-gold shadow-luxury relative z-10"
           />
         </div>
         <div className="space-y-2">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-            Ebeth Exclusive Stores
+            Ebeth Boutique and Exquisite Store
           </h1>
           <p className="text-muted-foreground">Boutique Elegance Meets Everyday Convenience</p>
         </div>

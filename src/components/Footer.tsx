@@ -15,7 +15,7 @@ export default function Footer() {
               <img src={logo} alt="Ebeth Boutique" className="h-12 w-12 rounded-full" />
               <div>
                 <div className="text-lg font-bold text-gold">EBETH BOUTIQUE</div>
-                <div className="text-xs text-primary-foreground/80">& Exclusive Store</div>
+                <div className="text-xs text-primary-foreground/80">and Exquisite Store</div>
               </div>
             </div>
             <p className="text-primary-foreground/80 mb-4">
@@ -145,7 +145,7 @@ export default function Footer() {
         <div className="border-t border-primary-foreground/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-primary-foreground/60 text-sm">
-              © 2025 Ebeth Boutique & Exclusive Store. All rights reserved.
+              © 2025 Ebeth Boutique and Exquisite Store. All rights reserved.
             </p>
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex gap-4 text-sm">

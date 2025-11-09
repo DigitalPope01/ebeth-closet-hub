@@ -53,7 +53,7 @@ export default function InstallPWA() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Install <span className="text-gold">Ebeth Exclusive</span>
+              Install <span className="text-gold">Ebeth Boutique and Exquisite Store</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Get the best shopping experience with our mobile app
@@ -68,7 +68,7 @@ export default function InstallPWA() {
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Already Installed!</h2>
                 <p className="text-muted-foreground">
-                  The Ebeth Exclusive app is already installed on your device.
+                  The Ebeth Boutique and Exquisite Store app is already installed on your device.
                 </p>
               </CardContent>
             </Card>
