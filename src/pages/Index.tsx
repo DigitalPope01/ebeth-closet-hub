@@ -229,6 +229,25 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* Blog Preview */}
+        <section className="py-12 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
+                Fashion <span className="text-gold">Style Tips</span>
+              </h2>
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
+                Discover expert fashion advice, styling guides, and the latest trends from Ebeth Boutique
+              </p>
+            </div>
+            <div className="text-center mb-8">
+              <Button variant="luxury" size="lg" onClick={() => window.location.href = '/blog'}>
+                Visit Our Blog
+              </Button>
+            </div>
+          </div>
+        </section>
         </Suspense>
       </main>
       <Suspense fallback={null}>

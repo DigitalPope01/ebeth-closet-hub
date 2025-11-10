@@ -124,6 +124,9 @@ export default function Navbar() {
             <Link to="/categories" className="text-sm font-semibold hover:text-gold transition-colors">
               Categories
             </Link>
+            <Link to="/blog" className="text-sm font-semibold hover:text-gold transition-colors">
+              Blog
+            </Link>
             
             {/* Fashion Dropdown */}
             <DropdownMenu>
@@ -275,6 +278,9 @@ export default function Navbar() {
               </Link>
               <Link to="/categories" className="text-sm font-semibold hover:text-gold transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Categories
+              </Link>
+              <Link to="/blog" className="text-sm font-semibold hover:text-gold transition-colors" onClick={() => setIsMenuOpen(false)}>
+                Blog
               </Link>
               
               {/* Fashion Mobile */}

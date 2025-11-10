@@ -599,6 +599,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_blog_view_count: {
+        Args: { post_id: string }
+        Returns: undefined
+      }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       log_security_event: {
         Args: {

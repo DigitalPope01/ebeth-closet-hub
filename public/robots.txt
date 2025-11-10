@@ -8,6 +8,7 @@ Allow: /accessories
 Allow: /household
 Allow: /about
 Allow: /deals
+Allow: /blog
 
 Disallow: /admin
 Disallow: /auth
