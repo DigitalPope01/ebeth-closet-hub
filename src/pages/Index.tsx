@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Truck, Shield, Headphones } from "lucide-react";
 
@@ -82,6 +83,11 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Premium Fashion, Accessories & Lifestyle - Abuja"
+        description="Ebeth Boutique Abuja – Exquisite men's and women's fashion, luxury accessories, and premium household essentials. Shop designer collections and weekly deals."
+        keywords="ebeth boutique, fashion boutique Abuja, luxury accessories Nigeria, women's wear, men's fashion, designer clothing, household essentials, exquisite store"
+      />
       <Navbar />
       <main>
         <Hero />
@@ -136,10 +142,10 @@ export default function Index() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-8 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-                Featured <span className="text-gold">Products</span>
+                Featured <span className="text-gold">Designer Products</span>
               </h2>
               <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-                Hand-picked items from our latest collection
+                Handpicked premium fashion and lifestyle essentials from our latest collection
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

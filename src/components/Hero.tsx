@@ -18,17 +18,17 @@ export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
   
   const heroImages = [
-    { url: heroFashion, alt: "Fashion Collection" },
-    { url: eveningDress, alt: "Evening Dresses" },
-    { url: leatherBag, alt: "Leather Accessories" },
-    { url: accessoriesImg, alt: "Accessories" },
-    { url: householdImg, alt: "Household Items" },
-    { url: heroTravelBags, alt: "Exotic Traveling Bags & Boxes" },
-    { url: heroMakeupKits, alt: "Premium Make-up Kits" },
-    { url: heroSunshades, alt: "Designer Sunshades" },
-    { url: heroRings, alt: "Luxury Rings" },
-    { url: heroGiftBoxes, alt: "Elegant Gift Boxes" },
-    { url: heroCorporateJackets, alt: "Corporate Jackets" },
+    { url: heroFashion, alt: "Premium fashion collection at Ebeth Boutique Abuja - Designer clothing and exquisite accessories" },
+    { url: eveningDress, alt: "Elegant evening dresses - Luxury women's fashion at Ebeth Boutique" },
+    { url: leatherBag, alt: "Designer leather handbags and accessories - Premium quality from Ebeth Boutique" },
+    { url: accessoriesImg, alt: "Luxury fashion accessories collection - Jewelry, bags, and more at Ebeth Boutique Abuja" },
+    { url: householdImg, alt: "Premium household items and home essentials - Exquisite collection at Ebeth Boutique" },
+    { url: heroTravelBags, alt: "Exotic traveling bags and luggage collection - Premium travel accessories Abuja" },
+    { url: heroMakeupKits, alt: "Premium makeup kits and beauty essentials - Luxury cosmetics at Ebeth Boutique" },
+    { url: heroSunshades, alt: "Designer sunglasses and sunshades - Fashion accessories at Ebeth Boutique Abuja" },
+    { url: heroRings, alt: "Luxury rings and fine jewelry - Exquisite accessories at Ebeth Boutique" },
+    { url: heroGiftBoxes, alt: "Elegant gift boxes and premium gift sets - Special occasions at Ebeth Boutique" },
+    { url: heroCorporateJackets, alt: "Corporate jackets and professional fashion wear - Business attire at Ebeth Boutique Abuja" },
   ];
 
   const nextSlide = () => {

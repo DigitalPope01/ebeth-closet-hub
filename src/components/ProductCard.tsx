@@ -98,7 +98,7 @@ export default function ProductCard({
       >
         <img
           src={image}
-          alt={`${name} - Premium boutique product`}
+          alt={`${name} - Premium fashion product at Ebeth Boutique Abuja - Exquisite quality and designer style`}
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

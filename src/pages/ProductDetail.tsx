@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -116,8 +117,35 @@ export default function ProductDetail() {
     ? product.product_images.sort((a, b) => (a as any).sort_order - (b as any).sort_order)
     : [{ image_url: '/placeholder.svg', alt_text: product.name }];
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "description": product.description || `Premium ${product.name} at Ebeth Boutique Abuja`,
+    "image": images[0].image_url,
+    "offers": {
+      "@type": "Offer",
+      "price": product.price,
+      "priceCurrency": "NGN",
+      "availability": product.stock_quantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "url": window.location.href
+    },
+    "brand": {
+      "@type": "Brand",
+      "name": "Ebeth Boutique and Exquisite Store"
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title={`${product.name} - Premium Fashion Product`}
+        description={product.description || `Shop ${product.name} at Ebeth Boutique Abuja - Premium quality fashion and lifestyle product. ${product.subcategory || 'Exquisite collection'}.`}
+        keywords={`${product.name}, ${product.subcategory || 'fashion'}, boutique Abuja, premium products, luxury items, buy ${product.name}`}
+        image={images[0].image_url}
+        type="product"
+        schema={productSchema}
+      />
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">
         <Button
@@ -141,7 +169,7 @@ export default function ProductDetail() {
               )}
               <img
                 src={images[selectedImage].image_url}
-                alt={images[selectedImage].alt_text || product.name}
+                alt={`${product.name} - Premium product at Ebeth Boutique Abuja - ${images[selectedImage].alt_text || product.subcategory || 'Exquisite quality'}`}
                 className="w-full h-full object-cover"
               />
             </div>

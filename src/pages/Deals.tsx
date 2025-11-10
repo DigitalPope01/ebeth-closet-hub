@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -76,6 +77,11 @@ export default function Deals() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Weekly Deals - Up to 40% Off Fashion & Accessories"
+        description="Save up to 40% on premium fashion and accessories at Ebeth Boutique Abuja. New weekly deals on designer clothing, luxury accessories, and lifestyle products."
+        keywords="fashion deals Abuja, sale accessories, boutique discounts, weekly deals Nigeria, fashion sale, designer discounts, luxury sale"
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
@@ -85,11 +91,11 @@ export default function Deals() {
               <Tag className="h-8 w-8 text-gold" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold">
-              Weekly <span className="text-gold">Deals</span>
+              Weekly <span className="text-gold">Fashion Deals</span>
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl">
-            Save up to 40% on selected items. New deals added weekly!
+            Save up to 40% on selected premium fashion, accessories, and lifestyle items. New exclusive deals added weekly at Ebeth Boutique Abuja!
           </p>
         </div>
 

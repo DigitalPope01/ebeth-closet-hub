@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -100,12 +101,17 @@ export default function Accessories() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={`${getTitle()} - Luxury Fashion Accessories`}
+        description="Shop luxury accessories at Ebeth Boutique Abuja - Designer bags, watches, belts, sunglasses, and wallets. Premium quality fashion accessories for men and women."
+        keywords="luxury accessories Abuja, designer bags, watches Nigeria, fashion accessories, leather belts, sunglasses, wallets, handbags, boutique accessories"
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">{getTitle()}</h1>
+          <h1 className="text-4xl font-bold mb-4">{getTitle()} - Luxury Fashion Accessories</h1>
           <p className="text-muted-foreground">
-            Discover our collection of luxury accessories
+            Discover our exquisite collection of luxury fashion accessories - bags, watches, and more at Ebeth Boutique Abuja
           </p>
         </div>
 

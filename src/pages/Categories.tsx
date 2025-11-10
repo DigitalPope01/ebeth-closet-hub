@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Package } from "lucide-react";
 
@@ -58,15 +59,20 @@ export default function Categories() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Browse Categories - Fashion, Accessories & Household"
+        description="Explore all product categories at Ebeth Boutique Abuja - Fashion, accessories, and household essentials. Find curated collections of premium designer products."
+        keywords="fashion categories, boutique sections, accessories categories, household products, shopping categories Abuja, product collections"
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Browse <span className="text-gold">Categories</span>
+            Browse <span className="text-gold">Product Categories</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
-            Explore our curated collections and find exactly what you're looking for
+            Explore our curated collections at Ebeth Boutique Abuja - fashion, accessories, and household essentials for every style
           </p>
         </div>
 
@@ -95,7 +101,7 @@ export default function Categories() {
                     {category.image_url ? (
                       <img
                         src={category.image_url}
-                        alt={category.name}
+                        alt={`${category.name} category at Ebeth Boutique Abuja - ${category.description || 'Premium collection'}`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
