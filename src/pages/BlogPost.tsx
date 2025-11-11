@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Calendar, User, Tag, ArrowLeft, Share2, Clock } from "lucide-react";
+import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
@@ -117,6 +118,31 @@ export default function BlogPost() {
     }
   };
 
+  const shareUrl = encodeURIComponent(window.location.href);
+  const shareTitle = encodeURIComponent(post?.title || "");
+
+  const socialShareButtons = [
+    {
+      name: "WhatsApp",
+      icon: FaWhatsapp,
+      url: `https://wa.me/?text=${shareTitle}%20${shareUrl}`,
+      color: "hover:text-green-500",
+    },
+    {
+      name: "Facebook",
+      icon: FaFacebook,
+      url: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,
+      color: "hover:text-blue-600",
+    },
+    {
+      name: "Instagram",
+      icon: FaInstagram,
+      url: `https://www.instagram.com/`,
+      color: "hover:text-pink-500",
+      note: "Copy link to share on Instagram",
+    },
+  ];
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -214,15 +240,36 @@ export default function BlogPost() {
                   <Clock className="h-4 w-4" />
                   <span>{estimateReadingTime(post.content)} min read</span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleShare}
-                  className="hover:text-gold ml-auto"
-                >
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
+                <div className="flex items-center gap-2 ml-auto">
+                  {socialShareButtons.map((social) => (
+                    <Button
+                      key={social.name}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        if (social.note) {
+                          navigator.clipboard.writeText(window.location.href);
+                          toast.success(social.note);
+                        } else {
+                          window.open(social.url, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
+                      className={`${social.color} transition-colors`}
+                      title={`Share on ${social.name}`}
+                    >
+                      <social.icon className="h-4 w-4" />
+                    </Button>
+                  ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleShare}
+                    className="hover:text-gold"
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share
+                  </Button>
+                </div>
               </div>
 
               {/* Article Content */}
