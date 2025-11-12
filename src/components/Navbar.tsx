@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Shield } from "lucide-react";
+import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Shield, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu";
@@ -247,6 +247,10 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/wishlist")}>
                     Wishlist
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/loyalty")}>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Loyalty Rewards
                   </DropdownMenuItem>
                   {isAdmin && <>
                       <DropdownMenuSeparator />
