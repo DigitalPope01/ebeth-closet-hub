@@ -74,7 +74,7 @@ export const useLoyaltyPoints = () => {
         .limit(10);
 
       if (error) throw error;
-      setTransactions(data || []);
+      setTransactions((data || []) as LoyaltyTransaction[]);
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
