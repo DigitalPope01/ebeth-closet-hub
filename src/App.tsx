@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import CustomerSupport from "@/components/CustomerSupport";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Shop from "./pages/Shop";
@@ -18,6 +19,7 @@ import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders";
 import Wishlist from "./pages/Wishlist";
+import Loyalty from "./pages/Loyalty";
 import About from "./pages/About";
 import SearchResults from "./pages/SearchResults";
 import ProductDetail from "./pages/ProductDetail";
@@ -40,6 +42,7 @@ const App = () => (
       <Sonner />
       <LoadingScreen />
       <BrowserRouter>
+        <GoogleAnalytics />
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -54,6 +57,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/loyalty" element={<Loyalty />} />
             <Route path="/about" element={<About />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/product/:id" element={<ProductDetail />} />

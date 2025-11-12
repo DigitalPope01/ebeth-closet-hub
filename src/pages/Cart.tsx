@@ -5,10 +5,13 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Minus, Plus, Trash2, ShoppingBag, Gift } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useLoyaltyPoints } from "@/hooks/useLoyaltyPoints";
+import LoyaltyPointsCard from "@/components/LoyaltyPointsCard";
 import categoryFashion from "@/assets/category-fashion.jpg";
 
 interface CartItem {
@@ -28,6 +31,10 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [couponCode, setCouponCode] = useState("");
+  const [pointsToRedeem, setPointsToRedeem] = useState("");
+  const [pointsDiscount, setPointsDiscount] = useState(0);
+  const [showRedeemDialog, setShowRedeemDialog] = useState(false);
+  const { loyaltyPoints, calculateDiscountFromPoints, calculatePointsFromAmount, redeemPoints } = useLoyaltyPoints();
 
   useEffect(() => {
     if (!user) {
@@ -94,7 +101,31 @@ export default function Cart() {
     0
   );
   const shipping = subtotal >= 150000 ? 0 : 2500;
-  const total = subtotal + shipping;
+  const total = subtotal + shipping - pointsDiscount;
+  const potentialPoints = calculatePointsFromAmount(subtotal);
+
+  const handleRedeemPoints = async () => {
+    const points = parseInt(pointsToRedeem);
+    if (isNaN(points) || points < 100) {
+      toast.error("Please enter at least 100 points");
+      return;
+    }
+
+    if (!loyaltyPoints || points > loyaltyPoints.points_balance) {
+      toast.error("Insufficient points");
+      return;
+    }
+
+    const discount = calculateDiscountFromPoints(points);
+    if (discount > subtotal) {
+      toast.error("Points discount cannot exceed subtotal");
+      return;
+    }
+
+    setPointsDiscount(discount);
+    setShowRedeemDialog(false);
+    toast.success(`${points} points redeemed for ₦${discount.toFixed(2)} discount!`);
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-NG", {
@@ -198,58 +229,123 @@ export default function Cart() {
           </div>
 
           <div className="lg:col-span-1">
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span className="font-semibold">{formatPrice(subtotal)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span className="font-semibold">
-                    {shipping === 0 ? "FREE" : formatPrice(shipping)}
-                  </span>
-                </div>
-                {subtotal < 150000 && (
-                  <p className="text-sm text-muted-foreground">
-                    Add {formatPrice(150000 - subtotal)} more for free shipping
-                  </p>
-                )}
-                <div className="border-t pt-4">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span className="text-gold">{formatPrice(total)}</span>
+            <div className="space-y-4">
+              {/* Loyalty Points Card */}
+              <LoyaltyPointsCard 
+                showRedeemButton={true}
+                onRedeem={() => setShowRedeemDialog(true)}
+              />
+
+              {/* Order Summary */}
+              <Card className="sticky top-4">
+                <CardHeader>
+                  <CardTitle>Order Summary</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span className="font-semibold">{formatPrice(subtotal)}</span>
                   </div>
-                </div>
+                  {pointsDiscount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span className="flex items-center gap-1">
+                        <Gift className="h-4 w-4" />
+                        Points Discount
+                      </span>
+                      <span className="font-semibold">-{formatPrice(pointsDiscount)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span className="font-semibold">
+                      {shipping === 0 ? "FREE" : formatPrice(shipping)}
+                    </span>
+                  </div>
+                  {subtotal < 150000 && (
+                    <p className="text-sm text-muted-foreground">
+                      Add {formatPrice(150000 - subtotal)} more for free shipping
+                    </p>
+                  )}
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total</span>
+                      <span className="text-gold">{formatPrice(total)}</span>
+                    </div>
+                    {potentialPoints > 0 && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        You'll earn {potentialPoints} points on this order
+                      </p>
+                    )}
+                  </div>
 
-                <div className="space-y-2">
-                  <Input
-                    placeholder="Enter coupon code"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                  />
-                  <Button variant="outline" className="w-full">
-                    Apply Coupon
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="Enter coupon code"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                    />
+                    <Button variant="outline" className="w-full">
+                      Apply Coupon
+                    </Button>
+                  </div>
+
+                  <Button variant="luxury" className="w-full" size="lg">
+                    Proceed to Checkout
                   </Button>
-                </div>
-
-                <Button variant="luxury" className="w-full" size="lg">
-                  Proceed to Checkout
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full"
-                  onClick={() => navigate("/shop")}
-                >
-                  Continue Shopping
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button
+                    variant="ghost"
+                    className="w-full"
+                    onClick={() => navigate("/shop")}
+                  >
+                    Continue Shopping
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
+
+        {/* Redeem Points Dialog */}
+        <Dialog open={showRedeemDialog} onOpenChange={setShowRedeemDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Redeem Loyalty Points</DialogTitle>
+              <DialogDescription>
+                Enter the number of points you want to redeem for a discount.
+                <br />
+                1 point = ₦0.50 discount (Minimum: 100 points)
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Points to Redeem</label>
+                <Input
+                  type="number"
+                  min="100"
+                  max={loyaltyPoints?.points_balance || 0}
+                  value={pointsToRedeem}
+                  onChange={(e) => setPointsToRedeem(e.target.value)}
+                  placeholder="Enter points (min. 100)"
+                />
+              </div>
+              {pointsToRedeem && parseInt(pointsToRedeem) >= 100 && (
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <p className="text-sm font-medium">
+                    {pointsToRedeem} points = ₦{calculateDiscountFromPoints(parseInt(pointsToRedeem)).toFixed(2)} discount
+                  </p>
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowRedeemDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleRedeemPoints}>
+                Redeem Points
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
       <Footer />
     </div>
