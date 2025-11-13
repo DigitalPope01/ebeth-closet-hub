@@ -34,7 +34,7 @@ export const useLoyaltyPoints = () => {
 
     try {
       const { data, error } = await supabase
-        .from('loyalty_points')
+        .from('loyalty_points' as any)
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
@@ -44,15 +44,15 @@ export const useLoyaltyPoints = () => {
       if (!data) {
         // Initialize points for user if not exists
         const { data: newPoints, error: insertError } = await supabase
-          .from('loyalty_points')
+          .from('loyalty_points' as any)
           .insert([{ user_id: user.id, points_balance: 0, lifetime_points: 0 }])
           .select()
           .single();
 
         if (insertError) throw insertError;
-        setLoyaltyPoints(newPoints);
+        setLoyaltyPoints(newPoints as any);
       } else {
-        setLoyaltyPoints(data);
+        setLoyaltyPoints(data as any);
       }
     } catch (error) {
       console.error('Error fetching loyalty points:', error);
@@ -67,14 +67,14 @@ export const useLoyaltyPoints = () => {
 
     try {
       const { data, error } = await supabase
-        .from('loyalty_transactions')
+        .from('loyalty_transactions' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(10);
 
       if (error) throw error;
-      setTransactions((data || []) as LoyaltyTransaction[]);
+      setTransactions((data || []) as any);
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
@@ -98,7 +98,7 @@ export const useLoyaltyPoints = () => {
     try {
       // Update points balance
       const { error: updateError } = await supabase
-        .from('loyalty_points')
+        .from('loyalty_points' as any)
         .update({ points_balance: loyaltyPoints.points_balance - pointsToRedeem })
         .eq('user_id', user.id);
 
@@ -106,7 +106,7 @@ export const useLoyaltyPoints = () => {
 
       // Record transaction
       const { error: transactionError } = await supabase
-        .from('loyalty_transactions')
+        .from('loyalty_transactions' as any)
         .insert([{
           user_id: user.id,
           points_change: -pointsToRedeem,
