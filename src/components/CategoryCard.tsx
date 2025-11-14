@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import LazyImage from "./LazyImage";
 
 interface CategoryCardProps {
   title: string;
@@ -13,11 +14,9 @@ export default function CategoryCard({ title, description, image, link }: Catego
     <Link to={link} className="group">
       <div className="relative overflow-hidden rounded-lg shadow-card hover:shadow-luxury transition-all duration-300">
         <div className="aspect-square overflow-hidden">
-          <img
+          <LazyImage
             src={image}
             alt={`${title} category at Ebeth Boutique Abuja - ${description} - Premium fashion and lifestyle products`}
-            loading="lazy"
-            decoding="async"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
