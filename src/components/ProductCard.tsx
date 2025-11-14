@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import LazyImage from "./LazyImage";
 
 interface ProductCardProps {
   id: string;
@@ -96,11 +97,9 @@ export default function ProductCard({
         className="relative aspect-square overflow-hidden rounded-t-lg bg-secondary cursor-pointer"
         onClick={handleProductClick}
       >
-        <img
+        <LazyImage
           src={image}
           alt={`${name} - Premium fashion product at Ebeth Boutique Abuja - Exquisite quality and designer style`}
-          loading="lazy"
-          decoding="async"
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
       </div>

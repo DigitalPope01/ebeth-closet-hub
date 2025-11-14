@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+import LazyImage from "@/components/LazyImage";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Package } from "lucide-react";
 
@@ -99,7 +100,7 @@ export default function Categories() {
                   {/* Category Image */}
                   <div className="aspect-square overflow-hidden bg-secondary">
                     {category.image_url ? (
-                      <img
+                      <LazyImage
                         src={category.image_url}
                         alt={`${category.name} category at Ebeth Boutique Abuja - ${category.description || 'Premium collection'}`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
