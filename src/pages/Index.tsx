@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import SEO from "@/components/SEO";
+import Testimonials from "@/components/Testimonials";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Truck, Shield, Headphones } from "lucide-react";
 
@@ -207,6 +208,9 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* Customer Testimonials */}
+        <Testimonials />
 
         {/* Newsletter */}
         <section className="py-12 md:py-20 bg-secondary">
