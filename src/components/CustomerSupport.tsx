@@ -9,7 +9,7 @@ export default function CustomerSupport() {
   const [isOpen, setIsOpen] = useState(false);
   
   const whatsappNumber = "+234 909 203 4816";
-  const emailAddress = "support@ebethexclusive.com";
+  const emailAddress = "ebethstores@gmail.com";
   
   const handleWhatsAppClick = () => {
     if (!formSubmissionLimiter.isAllowed("whatsapp-click")) {
