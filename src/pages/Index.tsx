@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import SEO from "@/components/SEO";
 import Testimonials from "@/components/Testimonials";
+import TrustBadges from "@/components/TrustBadges";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Truck, Shield, Headphones } from "lucide-react";
 
@@ -211,6 +212,9 @@ export default function Index() {
 
         {/* Customer Testimonials */}
         <Testimonials />
+
+        {/* Trust Badges */}
+        <TrustBadges />
 
         {/* Newsletter */}
         <section className="py-12 md:py-20 bg-secondary">
