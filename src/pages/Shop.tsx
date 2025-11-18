@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,6 +7,9 @@ import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import categoryFashion from "@/assets/category-fashion.jpg";
 
 interface Product {
@@ -15,6 +18,7 @@ interface Product {
   slug: string;
   price: number;
   original_price: number | null;
+  description: string | null;
   is_new: boolean;
   is_on_sale: boolean;
   stock_quantity: number;
@@ -27,13 +31,17 @@ interface Product {
 }
 
 export default function Shop() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categorySlug = searchParams.get("category");
+  const searchQuery = searchParams.get("q") || "";
   
   const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("newest");
   const [categories, setCategories] = useState<any[]>([]);
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchCategories();
@@ -42,6 +50,24 @@ export default function Shop() {
   useEffect(() => {
     fetchProducts();
   }, [categorySlug, sortBy]);
+
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
+
+  // Instant filter products based on search
+  useEffect(() => {
+    if (!localSearch.trim()) {
+      setProducts(allProducts);
+      return;
+    }
+
+    const filtered = allProducts.filter(product => 
+      product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
+      product.description?.toLowerCase().includes(localSearch.toLowerCase())
+    );
+    setProducts(filtered);
+  }, [localSearch, allProducts]);
 
   const fetchCategories = async () => {
     const { data } = await supabase
@@ -92,9 +118,40 @@ export default function Shop() {
     const { data, error } = await query;
     
     if (!error && data) {
+      setAllProducts(data);
       setProducts(data);
     }
     setLoading(false);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setLocalSearch(value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (localSearch.trim()) {
+      const params = new URLSearchParams(searchParams);
+      params.set("q", localSearch.trim());
+      setSearchParams(params);
+    }
+  };
+
+  const clearSearch = () => {
+    setLocalSearch("");
+    const params = new URLSearchParams(searchParams);
+    params.delete("q");
+    setSearchParams(params);
+  };
+
+  const handleCategoryChange = (slug: string | null) => {
+    const params = new URLSearchParams(searchParams);
+    if (slug) {
+      params.set("category", slug);
+    } else {
+      params.delete("category");
+    }
+    setSearchParams(params);
   };
 
   return (
@@ -117,10 +174,41 @@ export default function Shop() {
           </p>
         </div>
 
+        {/* Search Bar */}
+        <form onSubmit={handleSearchSubmit} className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+            <Input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search products by name, description..."
+              value={localSearch}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-10 pr-10 h-12 text-base"
+            />
+            {localSearch && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={clearSearch}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+          {localSearch && (
+            <p className="text-sm text-muted-foreground mt-2">
+              {products.length} {products.length === 1 ? 'result' : 'results'} found for "{localSearch}"
+            </p>
+          )}
+        </form>
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => window.location.href = "/shop"}
+              onClick={() => handleCategoryChange(null)}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 !categorySlug
                   ? "bg-gold text-primary-foreground"
@@ -132,7 +220,7 @@ export default function Shop() {
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => (window.location.href = `/shop?category=${category.slug}`)}
+                onClick={() => handleCategoryChange(category.slug)}
                 className={`px-4 py-2 rounded-lg transition-colors ${
                   categorySlug === category.slug
                     ? "bg-gold text-primary-foreground"
