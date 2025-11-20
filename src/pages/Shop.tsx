@@ -8,8 +8,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
+import { Search, X, Filter, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
 import categoryFashion from "@/assets/category-fashion.jpg";
 
 interface Product {
@@ -23,6 +28,12 @@ interface Product {
   is_on_sale: boolean;
   stock_quantity: number;
   category_id: string | null;
+  attributes?: {
+    size?: string[];
+    color?: string[];
+    brand?: string;
+    material?: string;
+  };
   product_images?: Array<{
     image_url: string;
     is_primary: boolean;
@@ -42,6 +53,21 @@ export default function Shop() {
   const [categories, setCategories] = useState<any[]>([]);
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  
+  // Filter states
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
+  const [maxPrice, setMaxPrice] = useState(1000000);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
+  
+  // Available filter options
+  const [availableSizes, setAvailableSizes] = useState<string[]>([]);
+  const [availableColors, setAvailableColors] = useState<string[]>([]);
+  const [availableBrands, setAvailableBrands] = useState<string[]>([]);
+  const [availableMaterials, setAvailableMaterials] = useState<string[]>([]);
 
   useEffect(() => {
     fetchCategories();
@@ -55,19 +81,82 @@ export default function Shop() {
     setLocalSearch(searchQuery);
   }, [searchQuery]);
 
-  // Instant filter products based on search
+  // Extract available filter options from all products
   useEffect(() => {
-    if (!localSearch.trim()) {
-      setProducts(allProducts);
-      return;
-    }
+    if (allProducts.length === 0) return;
+    
+    const sizes = new Set<string>();
+    const colors = new Set<string>();
+    const brands = new Set<string>();
+    const materials = new Set<string>();
+    let max = 0;
+    
+    allProducts.forEach(product => {
+      if (product.price > max) max = product.price;
+      
+      if (product.attributes) {
+        product.attributes.size?.forEach(s => sizes.add(s));
+        product.attributes.color?.forEach(c => colors.add(c));
+        if (product.attributes.brand) brands.add(product.attributes.brand);
+        if (product.attributes.material) materials.add(product.attributes.material);
+      }
+    });
+    
+    setAvailableSizes(Array.from(sizes).sort());
+    setAvailableColors(Array.from(colors).sort());
+    setAvailableBrands(Array.from(brands).sort());
+    setAvailableMaterials(Array.from(materials).sort());
+    setMaxPrice(Math.ceil(max));
+    setPriceRange([0, Math.ceil(max)]);
+  }, [allProducts]);
 
-    const filtered = allProducts.filter(product => 
-      product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
-      product.description?.toLowerCase().includes(localSearch.toLowerCase())
+  // Apply all filters
+  useEffect(() => {
+    let filtered = [...allProducts];
+    
+    // Search filter
+    if (localSearch.trim()) {
+      filtered = filtered.filter(product => 
+        product.name.toLowerCase().includes(localSearch.toLowerCase()) ||
+        product.description?.toLowerCase().includes(localSearch.toLowerCase())
+      );
+    }
+    
+    // Price range filter
+    filtered = filtered.filter(product => 
+      product.price >= priceRange[0] && product.price <= priceRange[1]
     );
+    
+    // Size filter
+    if (selectedSizes.length > 0) {
+      filtered = filtered.filter(product => 
+        product.attributes?.size?.some(s => selectedSizes.includes(s))
+      );
+    }
+    
+    // Color filter
+    if (selectedColors.length > 0) {
+      filtered = filtered.filter(product => 
+        product.attributes?.color?.some(c => selectedColors.includes(c))
+      );
+    }
+    
+    // Brand filter
+    if (selectedBrands.length > 0) {
+      filtered = filtered.filter(product => 
+        product.attributes?.brand && selectedBrands.includes(product.attributes.brand)
+      );
+    }
+    
+    // Material filter
+    if (selectedMaterials.length > 0) {
+      filtered = filtered.filter(product => 
+        product.attributes?.material && selectedMaterials.includes(product.attributes.material)
+      );
+    }
+    
     setProducts(filtered);
-  }, [localSearch, allProducts]);
+  }, [localSearch, allProducts, priceRange, selectedSizes, selectedColors, selectedBrands, selectedMaterials]);
 
   const fetchCategories = async () => {
     const { data } = await supabase
@@ -118,8 +207,12 @@ export default function Shop() {
     const { data, error } = await query;
     
     if (!error && data) {
-      setAllProducts(data);
-      setProducts(data);
+      const productsWithAttributes = data.map(product => ({
+        ...product,
+        attributes: product.attributes as { size?: string[]; color?: string[]; brand?: string; material?: string; } | undefined
+      }));
+      setAllProducts(productsWithAttributes);
+      setProducts(productsWithAttributes);
     }
     setLoading(false);
   };
@@ -153,6 +246,29 @@ export default function Shop() {
     }
     setSearchParams(params);
   };
+
+  const toggleFilter = (value: string, selected: string[], setSelected: (values: string[]) => void) => {
+    if (selected.includes(value)) {
+      setSelected(selected.filter(v => v !== value));
+    } else {
+      setSelected([...selected, value]);
+    }
+  };
+
+  const clearAllFilters = () => {
+    setPriceRange([0, maxPrice]);
+    setSelectedSizes([]);
+    setSelectedColors([]);
+    setSelectedBrands([]);
+    setSelectedMaterials([]);
+  };
+
+  const activeFiltersCount = 
+    selectedSizes.length + 
+    selectedColors.length + 
+    selectedBrands.length + 
+    selectedMaterials.length +
+    (priceRange[0] !== 0 || priceRange[1] !== maxPrice ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -232,17 +348,251 @@ export default function Shop() {
             ))}
           </div>
 
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="price-asc">Price: Low to High</SelectItem>
-              <SelectItem value="price-desc">Price: High to Low</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2">
+            <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="relative">
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Filters
+                  {activeFiltersCount > 0 && (
+                    <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center" variant="default">
+                      {activeFiltersCount}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-[350px] sm:w-[400px] overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Filter Products</SheetTitle>
+                  <SheetDescription>
+                    Refine your search with advanced filters
+                  </SheetDescription>
+                </SheetHeader>
+                
+                <div className="mt-6 space-y-6">
+                  {/* Price Range */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <Label className="text-base font-semibold">Price Range</Label>
+                      <Button variant="ghost" size="sm" onClick={() => setPriceRange([0, maxPrice])}>
+                        Reset
+                      </Button>
+                    </div>
+                    <div className="pt-2">
+                      <Slider
+                        value={priceRange}
+                        onValueChange={(value) => setPriceRange(value as [number, number])}
+                        min={0}
+                        max={maxPrice}
+                        step={1000}
+                        className="mb-4"
+                      />
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>₦{priceRange[0].toLocaleString()}</span>
+                        <span>₦{priceRange[1].toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Size Filter */}
+                  {availableSizes.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <Label className="text-base font-semibold">Size</Label>
+                        {selectedSizes.length > 0 && (
+                          <Button variant="ghost" size="sm" onClick={() => setSelectedSizes([])}>
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {availableSizes.map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => toggleFilter(size, selectedSizes, setSelectedSizes)}
+                            className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
+                              selectedSizes.includes(size)
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-secondary hover:bg-secondary/80"
+                            }`}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Color Filter */}
+                  {availableColors.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <Label className="text-base font-semibold">Color</Label>
+                        {selectedColors.length > 0 && (
+                          <Button variant="ghost" size="sm" onClick={() => setSelectedColors([])}>
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        {availableColors.map((color) => (
+                          <div key={color} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`color-${color}`}
+                              checked={selectedColors.includes(color)}
+                              onCheckedChange={() => toggleFilter(color, selectedColors, setSelectedColors)}
+                            />
+                            <Label htmlFor={`color-${color}`} className="cursor-pointer">
+                              {color}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Brand Filter */}
+                  {availableBrands.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <Label className="text-base font-semibold">Brand</Label>
+                        {selectedBrands.length > 0 && (
+                          <Button variant="ghost" size="sm" onClick={() => setSelectedBrands([])}>
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        {availableBrands.map((brand) => (
+                          <div key={brand} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`brand-${brand}`}
+                              checked={selectedBrands.includes(brand)}
+                              onCheckedChange={() => toggleFilter(brand, selectedBrands, setSelectedBrands)}
+                            />
+                            <Label htmlFor={`brand-${brand}`} className="cursor-pointer">
+                              {brand}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Material Filter */}
+                  {availableMaterials.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <Label className="text-base font-semibold">Material</Label>
+                        {selectedMaterials.length > 0 && (
+                          <Button variant="ghost" size="sm" onClick={() => setSelectedMaterials([])}>
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        {availableMaterials.map((material) => (
+                          <div key={material} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`material-${material}`}
+                              checked={selectedMaterials.includes(material)}
+                              onCheckedChange={() => toggleFilter(material, selectedMaterials, setSelectedMaterials)}
+                            />
+                            <Label htmlFor={`material-${material}`} className="cursor-pointer">
+                              {material}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Clear All Filters */}
+                  {activeFiltersCount > 0 && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={clearAllFilters}
+                    >
+                      Clear All Filters
+                    </Button>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                <SelectItem value="price-desc">Price: High to Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
+        {/* Active Filters Display */}
+        {activeFiltersCount > 0 && (
+          <div className="mb-6 flex flex-wrap gap-2 items-center">
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            {(priceRange[0] !== 0 || priceRange[1] !== maxPrice) && (
+              <Badge variant="secondary" className="gap-1">
+                ₦{priceRange[0].toLocaleString()} - ₦{priceRange[1].toLocaleString()}
+                <X 
+                  className="h-3 w-3 cursor-pointer" 
+                  onClick={() => setPriceRange([0, maxPrice])}
+                />
+              </Badge>
+            )}
+            {selectedSizes.map((size) => (
+              <Badge key={size} variant="secondary" className="gap-1">
+                Size: {size}
+                <X 
+                  className="h-3 w-3 cursor-pointer" 
+                  onClick={() => setSelectedSizes(selectedSizes.filter(s => s !== size))}
+                />
+              </Badge>
+            ))}
+            {selectedColors.map((color) => (
+              <Badge key={color} variant="secondary" className="gap-1">
+                Color: {color}
+                <X 
+                  className="h-3 w-3 cursor-pointer" 
+                  onClick={() => setSelectedColors(selectedColors.filter(c => c !== color))}
+                />
+              </Badge>
+            ))}
+            {selectedBrands.map((brand) => (
+              <Badge key={brand} variant="secondary" className="gap-1">
+                Brand: {brand}
+                <X 
+                  className="h-3 w-3 cursor-pointer" 
+                  onClick={() => setSelectedBrands(selectedBrands.filter(b => b !== brand))}
+                />
+              </Badge>
+            ))}
+            {selectedMaterials.map((material) => (
+              <Badge key={material} variant="secondary" className="gap-1">
+                Material: {material}
+                <X 
+                  className="h-3 w-3 cursor-pointer" 
+                  onClick={() => setSelectedMaterials(selectedMaterials.filter(m => m !== material))}
+                />
+              </Badge>
+            ))}
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={clearAllFilters}
+              className="text-xs"
+            >
+              Clear all
+            </Button>
+          </div>
+        )}
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
