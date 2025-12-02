@@ -8,13 +8,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search, X, Filter, SlidersHorizontal } from "lucide-react";
+import { Search, X, SlidersHorizontal, Bookmark, BookmarkPlus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import categoryFashion from "@/assets/category-fashion.jpg";
 
 interface Product {
@@ -41,7 +45,23 @@ interface Product {
   }>;
 }
 
+interface SavedSearch {
+  id: string;
+  name: string;
+  filters: {
+    search?: string;
+    category?: string;
+    priceRange?: [number, number];
+    sizes?: string[];
+    colors?: string[];
+    brands?: string[];
+    materials?: string[];
+  };
+  created_at: string;
+}
+
 export default function Shop() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const categorySlug = searchParams.get("category");
   const searchQuery = searchParams.get("q") || "";
@@ -68,10 +88,18 @@ export default function Shop() {
   const [availableColors, setAvailableColors] = useState<string[]>([]);
   const [availableBrands, setAvailableBrands] = useState<string[]>([]);
   const [availableMaterials, setAvailableMaterials] = useState<string[]>([]);
+  
+  // Saved searches
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [newPresetName, setNewPresetName] = useState("");
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+    if (user) {
+      fetchSavedSearches();
+    }
+  }, [user]);
 
   useEffect(() => {
     fetchProducts();
@@ -80,6 +108,106 @@ export default function Shop() {
   useEffect(() => {
     setLocalSearch(searchQuery);
   }, [searchQuery]);
+
+  // Fetch saved searches
+  const fetchSavedSearches = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("saved_searches")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    
+    if (!error && data) {
+      setSavedSearches(data as SavedSearch[]);
+    }
+  };
+
+  // Save current filters as a preset
+  const saveCurrentFilters = async () => {
+    if (!user) {
+      toast.error("Please sign in to save searches");
+      return;
+    }
+    if (!newPresetName.trim()) {
+      toast.error("Please enter a name for this preset");
+      return;
+    }
+
+    const filters = {
+      search: localSearch || undefined,
+      category: categorySlug || undefined,
+      priceRange: (priceRange[0] !== 0 || priceRange[1] !== maxPrice) ? priceRange : undefined,
+      sizes: selectedSizes.length > 0 ? selectedSizes : undefined,
+      colors: selectedColors.length > 0 ? selectedColors : undefined,
+      brands: selectedBrands.length > 0 ? selectedBrands : undefined,
+      materials: selectedMaterials.length > 0 ? selectedMaterials : undefined,
+    };
+
+    const { error } = await supabase.from("saved_searches").insert({
+      user_id: user.id,
+      name: newPresetName.trim(),
+      filters,
+    });
+
+    if (error) {
+      toast.error("Failed to save search preset");
+    } else {
+      toast.success("Search preset saved!");
+      setNewPresetName("");
+      setSaveDialogOpen(false);
+      fetchSavedSearches();
+    }
+  };
+
+  // Apply a saved search
+  const applySavedSearch = (saved: SavedSearch) => {
+    const { filters } = saved;
+    
+    // Apply search query
+    if (filters.search) {
+      setLocalSearch(filters.search);
+      const params = new URLSearchParams(searchParams);
+      params.set("q", filters.search);
+      setSearchParams(params);
+    } else {
+      setLocalSearch("");
+    }
+    
+    // Apply category
+    if (filters.category) {
+      const params = new URLSearchParams(searchParams);
+      params.set("category", filters.category);
+      setSearchParams(params);
+    }
+    
+    // Apply price range
+    if (filters.priceRange) {
+      setPriceRange(filters.priceRange);
+    } else {
+      setPriceRange([0, maxPrice]);
+    }
+    
+    // Apply attribute filters
+    setSelectedSizes(filters.sizes || []);
+    setSelectedColors(filters.colors || []);
+    setSelectedBrands(filters.brands || []);
+    setSelectedMaterials(filters.materials || []);
+    
+    toast.success(`Applied "${saved.name}" filters`);
+  };
+
+  // Delete a saved search
+  const deleteSavedSearch = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const { error } = await supabase.from("saved_searches").delete().eq("id", id);
+    if (error) {
+      toast.error("Failed to delete preset");
+    } else {
+      toast.success("Preset deleted");
+      fetchSavedSearches();
+    }
+  };
 
   // Extract available filter options from all products
   useEffect(() => {
@@ -349,6 +477,77 @@ export default function Shop() {
           </div>
 
           <div className="flex gap-2">
+            {/* Saved Searches */}
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="relative">
+                    <Bookmark className="h-4 w-4 mr-2" />
+                    Saved
+                    {savedSearches.length > 0 && (
+                      <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center" variant="secondary">
+                        {savedSearches.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {savedSearches.length === 0 ? (
+                    <div className="px-2 py-3 text-sm text-muted-foreground text-center">
+                      No saved searches yet
+                    </div>
+                  ) : (
+                    savedSearches.map((saved) => (
+                      <DropdownMenuItem
+                        key={saved.id}
+                        onClick={() => applySavedSearch(saved)}
+                        className="flex justify-between items-center cursor-pointer"
+                      >
+                        <span className="truncate">{saved.name}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10"
+                          onClick={(e) => deleteSavedSearch(saved.id, e)}
+                        >
+                          <Trash2 className="h-3 w-3 text-destructive" />
+                        </Button>
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                  <DropdownMenuSeparator />
+                  <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+                    <DialogTrigger asChild>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <BookmarkPlus className="h-4 w-4 mr-2" />
+                        Save Current Filters
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Save Search Preset</DialogTitle>
+                        <DialogDescription>
+                          Save your current filters as a preset for quick access later.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Input
+                        placeholder="Preset name (e.g., Summer Dresses)"
+                        value={newPresetName}
+                        onChange={(e) => setNewPresetName(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && saveCurrentFilters()}
+                      />
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={saveCurrentFilters}>Save</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
             <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
               <SheetTrigger asChild>
                 <Button variant="outline" className="relative">
