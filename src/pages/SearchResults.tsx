@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, ScanBarcode } from "lucide-react";
+import BarcodeScannerModal from "@/components/BarcodeScannerModal";
 import {
   Command,
   CommandGroup,
@@ -39,6 +41,7 @@ export default function SearchResults() {
   const [loading, setLoading] = useState(true);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const [scannerOpen, setScannerOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -133,7 +136,17 @@ export default function SearchResults() {
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-6">Search Results</h1>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-3xl font-bold">Search Results</h1>
+            <Button 
+              variant="outline" 
+              onClick={() => setScannerOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <ScanBarcode className="h-4 w-4" />
+              <span className="hidden sm:inline">Scan Barcode</span>
+            </Button>
+          </div>
           <form onSubmit={handleSearch} className="relative max-w-2xl">
             <div className="relative" ref={searchRef}>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 z-10" />
@@ -208,6 +221,8 @@ export default function SearchResults() {
           </div>
         )}
       </div>
+      
+      <BarcodeScannerModal open={scannerOpen} onOpenChange={setScannerOpen} />
     </div>
   );
 }

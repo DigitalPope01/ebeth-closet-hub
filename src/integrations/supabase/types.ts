@@ -465,6 +465,7 @@ export type Database = {
       products: {
         Row: {
           attributes: Json | null
+          barcode: string | null
           category_id: string | null
           created_at: string | null
           description: string | null
@@ -486,6 +487,7 @@ export type Database = {
         }
         Insert: {
           attributes?: Json | null
+          barcode?: string | null
           category_id?: string | null
           created_at?: string | null
           description?: string | null
@@ -507,6 +509,7 @@ export type Database = {
         }
         Update: {
           attributes?: Json | null
+          barcode?: string | null
           category_id?: string | null
           created_at?: string | null
           description?: string | null
