@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Shield, Sparkles } from "lucide-react";
+import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Shield, Sparkles, ScanBarcode } from "lucide-react";
+import BarcodeScannerModal from "./BarcodeScannerModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu";
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const [scannerOpen, setScannerOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const {
     user,
@@ -220,6 +222,9 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center space-x-2 md:space-x-4">
+            <Button variant="ghost" size="icon" className="hover:text-gold" onClick={() => setScannerOpen(true)} title="Scan Barcode">
+              <ScanBarcode className="h-5 w-5" />
+            </Button>
             <Button variant="ghost" size="icon" className="hover:text-gold lg:hidden" onClick={() => navigate("/search")}>
               <Search className="h-5 w-5" />
             </Button>
@@ -356,5 +361,7 @@ export default function Navbar() {
             </div>
           </div>}
       </div>
+      
+      <BarcodeScannerModal open={scannerOpen} onOpenChange={setScannerOpen} />
     </nav>;
 }
