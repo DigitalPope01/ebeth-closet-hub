@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import CustomerSupport from "@/components/CustomerSupport";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { useCopyProtection } from "@/hooks/useCopyProtection";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Shop from "./pages/Shop";
@@ -36,7 +37,13 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const CopyProtectionWrapper = ({ children }: { children: React.ReactNode }) => {
+  useCopyProtection();
+  return <>{children}</>;
+};
+
 const App = () => (
+  <CopyProtectionWrapper>
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -79,6 +86,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  </CopyProtectionWrapper>
 );
 
 export default App;
