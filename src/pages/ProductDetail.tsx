@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Star, ShoppingCart, Heart, ChevronLeft, Minus, Plus } from "lucide-react";
+import { isValidUUID } from "@/utils/sanitize";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -38,6 +39,11 @@ export default function ProductDetail() {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      if (!id || !isValidUUID(id)) {
+        toast.error("Invalid product");
+        navigate("/shop");
+        return;
+      }
       const { data, error } = await supabase
         .from("products")
         .select(`

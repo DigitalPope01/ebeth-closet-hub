@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { sanitizeSearchQuery } from "@/utils/sanitize";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
@@ -66,7 +67,7 @@ export default function SearchResults() {
           slug,
           product_images (image_url)
         `)
-        .or(`name.ilike.%${query}%,description.ilike.%${query}%,subcategory.ilike.%${query}%`)
+        .or(`name.ilike.%${sanitizeSearchQuery(query)}%,description.ilike.%${sanitizeSearchQuery(query)}%,subcategory.ilike.%${sanitizeSearchQuery(query)}%`)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
 
@@ -91,7 +92,7 @@ export default function SearchResults() {
       const { data } = await supabase
         .from("products")
         .select("id, name, slug, price")
-        .or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,subcategory.ilike.%${searchQuery}%`)
+        .or(`name.ilike.%${sanitizeSearchQuery(searchQuery)}%,description.ilike.%${sanitizeSearchQuery(searchQuery)}%,subcategory.ilike.%${sanitizeSearchQuery(searchQuery)}%`)
         .eq("is_active", true)
         .limit(5);
 
