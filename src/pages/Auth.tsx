@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { formSubmissionLimiter } from "@/utils/rateLimiter";
 import logo from "@/assets/ebeth-logo.jpg";
 
 const signInSchema = z.object({
@@ -47,6 +48,10 @@ export default function Auth() {
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!formSubmissionLimiter.isAllowed("auth-signin")) {
+      toast.error("Too many sign-in attempts. Please wait a moment.");
+      return;
+    }
     setErrors({});
     setLoading(true);
 
@@ -83,6 +88,10 @@ export default function Auth() {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!formSubmissionLimiter.isAllowed("auth-signup")) {
+      toast.error("Too many sign-up attempts. Please wait a moment.");
+      return;
+    }
     setErrors({});
     setLoading(true);
 
@@ -121,6 +130,10 @@ export default function Auth() {
 
   const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!formSubmissionLimiter.isAllowed("auth-reset")) {
+      toast.error("Too many reset attempts. Please wait a moment.");
+      return;
+    }
     setErrors({});
     setLoading(true);
 

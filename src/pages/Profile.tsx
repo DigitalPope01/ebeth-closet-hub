@@ -8,12 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { profileSchema } from "@/utils/sanitize";
+import { formSubmissionLimiter } from "@/utils/rateLimiter";
 
 export default function Profile() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [profile, setProfile] = useState({
     full_name: "",
     phone: "",
@@ -52,6 +55,27 @@ export default function Profile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    // Rate limit
+    if (!formSubmissionLimiter.isAllowed("profile-update")) {
+      toast.error("Too many attempts. Please wait a moment.");
+      return;
+    }
+
+    // Validate
+    const result = profileSchema.safeParse(profile);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setSaving(true);
 
     try {
@@ -60,7 +84,7 @@ export default function Profile() {
         .upsert({
           id: user?.id,
           email: user?.email,
-          ...profile,
+          ...result.data,
           updated_at: new Date().toISOString(),
         });
 
@@ -96,51 +120,63 @@ export default function Profile() {
             <Label htmlFor="full_name">Full Name</Label>
             <Input
               id="full_name"
-              value={profile.full_name}
+              value={profile.full_name || ""}
               onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+              maxLength={100}
             />
+            {errors.full_name && <p className="text-sm text-destructive">{errors.full_name}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Phone</Label>
             <Input
               id="phone"
-              value={profile.phone}
+              value={profile.phone || ""}
               onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+              maxLength={20}
             />
+            {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="address">Address</Label>
             <Input
               id="address"
-              value={profile.address}
+              value={profile.address || ""}
               onChange={(e) => setProfile({ ...profile, address: e.target.value })}
+              maxLength={500}
             />
+            {errors.address && <p className="text-sm text-destructive">{errors.address}</p>}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
               <Input
                 id="city"
-                value={profile.city}
+                value={profile.city || ""}
                 onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                maxLength={100}
               />
+              {errors.city && <p className="text-sm text-destructive">{errors.city}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="state">State</Label>
               <Input
                 id="state"
-                value={profile.state}
+                value={profile.state || ""}
                 onChange={(e) => setProfile({ ...profile, state: e.target.value })}
+                maxLength={100}
               />
+              {errors.state && <p className="text-sm text-destructive">{errors.state}</p>}
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="postal_code">Postal Code</Label>
             <Input
               id="postal_code"
-              value={profile.postal_code}
+              value={profile.postal_code || ""}
               onChange={(e) => setProfile({ ...profile, postal_code: e.target.value })}
+              maxLength={20}
             />
+            {errors.postal_code && <p className="text-sm text-destructive">{errors.postal_code}</p>}
           </div>
           <Button type="submit" disabled={saving} className="w-full">
             {saving ? "Saving..." : "Save Profile"}

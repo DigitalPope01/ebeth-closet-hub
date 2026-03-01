@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Shield, Sparkles, ScanBarcode } from "lucide-react";
+import { sanitizeSearchQuery } from "@/utils/sanitize";
 import BarcodeScannerModal from "./BarcodeScannerModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,9 +52,10 @@ export default function Navbar() {
         setShowSuggestions(false);
         return;
       }
+      const sanitized = sanitizeSearchQuery(searchQuery);
       const {
         data
-      } = await supabase.from("products").select("id, name, slug, price").or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,subcategory.ilike.%${searchQuery}%`).eq("is_active", true).limit(5);
+      } = await supabase.from("products").select("id, name, slug, price").or(`name.ilike.%${sanitized}%,description.ilike.%${sanitized}%,subcategory.ilike.%${sanitized}%`).eq("is_active", true).limit(5);
       if (data) {
         setSuggestions(data);
         setShowSuggestions(true);
