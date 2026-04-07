@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SEO from "@/components/SEO";
+import SEO, { buildFAQSchema } from "@/components/SEO";
 import {
   Accordion,
   AccordionContent,
@@ -16,6 +16,16 @@ export default function FAQ() {
         title="Frequently Asked Questions - Ebeth Boutique"
         description="Find answers to common questions about shipping, returns, payments, and products at Ebeth Boutique and Exquisite Store in Abuja, Nigeria."
         keywords="FAQ, help, shipping information, returns policy, payment methods, Ebeth Boutique Abuja"
+        schema={buildFAQSchema([
+          { question: "Do you offer delivery services in Abuja?", answer: "Yes, we offer delivery services within Abuja and surrounding areas. Delivery fees vary based on your location. You can also visit our physical store at Atlantic Mall, Utako for in-person shopping and pickup." },
+          { question: "How long does delivery take?", answer: "Delivery within Abuja typically takes 1-3 business days. We offer same-day delivery for orders placed before 12 PM within certain areas." },
+          { question: "What is your return policy?", answer: "We accept returns within 7 days of delivery for unworn, unwashed items with original tags attached. Contact us at ebethstores@gmail.com or call +234 909 203 4816 to initiate a return." },
+          { question: "What payment methods do you accept?", answer: "We accept bank transfer, card payments, and cash on delivery for select areas. All online payments are processed securely." },
+          { question: "Are your products authentic?", answer: "Yes, all products sold at Ebeth Boutique are 100% authentic. We source our items from authorized distributors and trusted suppliers." },
+          { question: "Do you offer cash on delivery?", answer: "Yes, we offer cash on delivery for orders within select areas of Abuja. This option will be available at checkout if your delivery location qualifies." },
+          { question: "What is the loyalty program?", answer: "Our loyalty program rewards you with points for every purchase. These points can be redeemed for discounts on future orders. Sign up for a free account to start earning points." },
+          { question: "Can I see products in person before buying?", answer: "Yes! Visit our physical store at Atlantic Mall, 40 Ajose Adeogun St, Utako, Abuja. Open Monday to Sunday from 7:00 AM to 10:00 PM." },
+        ])}
       />
       <Navbar />
       <main className="min-h-screen bg-background">
