@@ -117,7 +117,7 @@ export default function Navbar() {
             <div className="h-12 w-12 md:h-14 md:w-14 rounded-full border-2 border-gold/30 p-0.5 hover:border-gold transition-colors">
               <img src={logo} alt="Ebeth Boutique and Exquisite Store - Premium fashion boutique in Abuja" className="h-full w-full rounded-full object-cover" />
             </div>
-            <span className="text-base md:text-xl font-extrabold tracking-tight text-left uppercase">EBETH Boutique and Exquisite Store</span>
+            <span className="text-base md:text-xl tracking-tight text-left"><span className="font-extrabold uppercase">EBETH</span> <span className="font-semibold">Boutique and Exquisite Store</span></span>
           </Link>
 
           {/* Desktop Navigation */}
